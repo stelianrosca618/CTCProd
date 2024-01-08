@@ -22,6 +22,14 @@ function app_init_admin_sidebar_menu_items()
         'badge'    => [],
     ]);
 
+    $CI->app_menu->add_sidebar_menu_item('pastSales', [
+        'name'     => _l('Past Sales'),
+        'href'     => admin_url('pastsales'),
+        'position' => 2,
+        'icon'     => 'fa fa-layer-group',
+        'badge'    => [],
+    ]);
+
     if (
         has_permission('customers', '', 'view')
         || (have_assigned_customers()
