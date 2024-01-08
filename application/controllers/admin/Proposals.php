@@ -371,6 +371,16 @@ class Proposals extends AdminController
         }
     }
 
+    public function updateInvoiceData(){
+        $invoicesData = $this->db->get(db_prefix().'invoices')->result_array();
+        foreach($invoicesData as $invoiceIt){
+            $this->db->where('invoice_id', $invoiceIt['id'])->update(db_prefix().'proposals', [
+                'total' => $invoiceIt['total'],
+                'subtotal' => $invoiceIt['subtotal'],
+            ]);
+        }
+    }
+
     public function get_notes($id)
     {
         if (user_can_view_proposal($id)) {
@@ -431,6 +441,8 @@ class Proposals extends AdminController
                 $this->db->update(db_prefix() . 'proposals', [
                     'invoice_id' => $invoice_id,
                     'status'     => 3,
+                    'total' => $postedData['total'],
+                    'subtotal' => $postedData['subtotal'],
                 ]);
                 
                 /*$this->db->select(db_prefix().'itemable.*, '.db_prefix().'items.group_id,'.db_prefix().'items.production_ratio');

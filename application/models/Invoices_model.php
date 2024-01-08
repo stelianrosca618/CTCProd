@@ -465,6 +465,8 @@ class Invoices_model extends App_Model
                         $this->db->where('id', $proposal->id);
                         $this->db->update(db_prefix() . 'proposals', [
                             'invoice_id' => $insert_id,
+                            'total' => $data['total'],
+                            'subtotal' => $data['subtotal'],
                         ]);
                     }
                 }

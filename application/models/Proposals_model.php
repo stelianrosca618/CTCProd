@@ -409,7 +409,11 @@ class Proposals_model extends App_Model
                         break;
                     }
                 }
+                if($proposal->invoice_id){
+                    $invoiceData = $this->db->where('id', $proposal->invoice_id)->get(db_prefix().'invoices')->result_array();
+                    $proposal->total = $invoiceData[0]['total'];
 
+                }
                 if ($proposal->project_id) {
                     $this->load->model('projects_model');
                     $proposal->project_data = $this->projects_model->get($proposal->project_id);
