@@ -469,6 +469,13 @@ class Proposals extends AdminController
                         'prod_ratio'=>$prodRatio,
                         'item_id'=>$isItem[0]['id'],
                     ]);
+                    $this->db->insert(db_prefix().'pastsales', [
+                        'company' => $companyData[0]['company'],
+                        'date' => date("Y-m-d"),
+                        'Product' => $isItem[0]['id'],
+                        'Quantity' => $proItem['qty'] * ($prodRatio / 100),
+                        "Price" => $proItem['rate'] * $proItem['qty'] * ($prodRatio / 100),
+                    ]);
                 }
                 
                 log_activity('Proposal Converted to Invoice [InvoiceID: ' . $invoice_id . ', ProposalID: ' . $id . ']');

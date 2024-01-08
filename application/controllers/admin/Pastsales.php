@@ -28,7 +28,26 @@ class Pastsales extends AdminController
        $this->load->view('admin/pastsales/manage', $data);
     }
 
-   
+    public function initPastSales(){
+        $this->db->select(db_prefix().'itemable.*, '.db_prefix().'invoices.date as addedDate, '.db_prefix().'clients.company');
+        $this->db->where('rel_type', 'invoice');
+        $this->db->from(db_prefix().'itemable');
+        $this->db->join(db_prefix().'invoices', db_prefix().'invoices.id='.db_prefix().'itemable.rel_id', 'left');
+        $this->db->join(db_prefix().'clients', db_prefix().'clients.userid='.db_prefix().'invoices.clientid', 'left');
+        $addDatas = $this->db->get()->result_array();
+        
+        foreach($addDatas as $addItem){
+            $this->db->insert(db_prefix().'pastsales', [
+                'company' => $addItem['company'],
+                'date' => date("Y-m-d", strtotime($addItem['addedDate'])),
+                'Product' => $addItem['reference_item_id'],
+                'Quantity' => $addItem['qty'],
+                "Price" => $addItem['rate'] * $addItem['qty'],
+            ]);
+        }
+        print_r($addDatas);
+    }
+
     public function addSales(){
         $data = $this->input->post();
         if($data){

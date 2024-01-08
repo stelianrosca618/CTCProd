@@ -63,27 +63,35 @@ class Missiveapp_model extends App_Model
 
     public function get_consumption($clientid)
     {
-        $this->db->select('YEAR(' . db_prefix() . 'invoices.date) AS date_year, SUM(' . db_prefix() . 'itemable.qty) AS total_qty');
-        $this->db->join(db_prefix() . 'invoices', db_prefix() . 'invoices.id=' . db_prefix() . 'itemable.rel_id', 'left');
-        $this->db->where(db_prefix() . 'itemable.rel_type', 'invoice');
-        $this->db->where(db_prefix() . 'invoices.clientid', $clientid);
-        $this->db->group_by('YEAR(' . db_prefix() . 'invoices.date)');
-        $this->db->order_by('YEAR(' . db_prefix() . 'invoices.date)', 'desc');
-        $consumptionByYear = $this->db->get(db_prefix() . 'itemable')->result_array();
+        $clientData = $this->db->where('userid', $clientid)->get(db_prefix().'clients')->result_array();
+
+        $this->db->select('YEAR(' . db_prefix() . 'pastsales.date) AS date_year, SUM(' . db_prefix() . 'pastsales.Quantity) AS total_qty');
+        $this->db->where(db_prefix() . 'pastsales.company', $clientData[0]['company']);
+        $this->db->group_by('YEAR(' . db_prefix() . 'pastsales.date)');
+        $this->db->order_by('YEAR(' . db_prefix() . 'pastsales.date)', 'desc');
+        $consumptionByYear = $this->db->get(db_prefix() . 'pastsales')->result_array();
+
+        // $this->db->select('YEAR(' . db_prefix() . 'invoices.date) AS date_year, SUM(' . db_prefix() . 'itemable.qty) AS total_qty');
+        // $this->db->join(db_prefix() . 'invoices', db_prefix() . 'invoices.id=' . db_prefix() . 'itemable.rel_id', 'left');
+        // $this->db->where(db_prefix() . 'itemable.rel_type', 'invoice');
+        // $this->db->where(db_prefix() . 'invoices.clientid', $clientid);
+        // $this->db->group_by('YEAR(' . db_prefix() . 'invoices.date)');
+        // $this->db->order_by('YEAR(' . db_prefix() . 'invoices.date)', 'desc');
+        // $consumptionByYear = $this->db->get(db_prefix() . 'itemable')->result_array();
         
         //select * from users
        //where date_joined> now() - INTERVAL 12 month;
        $lastYearDate = new DateTime();
 
-       $dateMinus12 = $lastYearDate->modify("-12 months")->format('Y-m-d');
-       $this->db->select(db_prefix() . 'itemable.*');
-        $this->db->join(db_prefix() . 'invoices', db_prefix() . 'invoices.id=' . db_prefix() . 'itemable.rel_id', 'left');
-        $this->db->where(db_prefix() . 'itemable.rel_type', 'invoice');
-        $this->db->where(db_prefix() . 'invoices.clientid', $clientid);
-        $this->db->where(db_prefix() . 'invoices.date >=', $dateMinus12);
-        $lastMonths = $this->db->get(db_prefix() . 'itemable')->result_array();
+        $dateMinus12 = $lastYearDate->modify("-12 months")->format('Y-m-d');
+        $this->db->select(db_prefix() . 'pastsales.*, '.db_prefix().'items.description');
+        $this->db->where(db_prefix() . 'pastsales.company', $clientData[0]['company']);
+        $this->db->where(db_prefix() . 'pastsales.date >=', $dateMinus12);
+        $this->db->join(db_prefix().'items', db_prefix().'items.id='.db_prefix().'pastsales.Product', 'left');
+        $lastMonths = $this->db->get(db_prefix() . 'pastsales')->result_array();
+
         
-        $lastMonthsQty = $lastMonths? array_sum(array_values(array_column($lastMonths, 'qty'))) : 0;
+        $lastMonthsQty = $lastMonths? array_sum(array_values(array_column($lastMonths, 'Quantity'))) : 0;
         $lastProducts = $lastMonths? getProductsMonths($lastMonths) : '';
         $qtyPerYear =  $consumptionByYear? array_sum(array_values(array_column($consumptionByYear, 'total_qty')))/count(array_values(array_column($consumptionByYear, 'total_qty'))) : 0;
         return ['consureData' => $consumptionByYear, 'lastQuantity' =>  $lastMonthsQty, "lastProducts" => $lastProducts, 'qtyPerYear'=>$qtyPerYear];

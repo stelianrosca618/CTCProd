@@ -52,10 +52,10 @@ function getProductsMonths($data) {
     $groups = array();
     foreach ($data as $record) {
         if(isset($groups[$record['description']])) {
-            $groups[$record['description']]['qty'] += $record['qty'];
+            $groups[$record['description']]['qty'] += $record['Quantity'];
         } else $groups[$record['description']] = [
             'discription' => $record['description'],
-            'qty' => $record['qty']
+            'qty' => $record['Quantity']
         ];
     }
     $productStr = '';

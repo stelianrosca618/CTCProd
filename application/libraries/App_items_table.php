@@ -297,7 +297,8 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $html .= '<th align="right">CFR ('.$port_name.') '.$container_type.'</th>';
+                    $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                    $html .= '<th align="right">CFR ('.$port_name.') '.$prevContainer.'</th>';
                 }
             }            
         }

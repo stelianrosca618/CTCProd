@@ -5,6 +5,7 @@
         <div class="row">
             <div class="col-md-12 tw-mb-2">
                 <button class="btn btn-md btn-primary" onclick="openNewSalesModal()">Add Past Sale</button>
+                <!-- <button class="btn btn-md btn-primary" onclick="initSales()">init Past Sale</button> -->
             </div>
             <div class="col-md-12">
                 <div class="panel_s">
@@ -61,6 +62,9 @@
 
 <?php init_tail(); ?>
 <script>
+    function initSales(){
+        $.get(admin_url + 'pastsales/initPastSales/');
+    }
 let salesData = <?php echo json_encode($pastsales)?>;
 console.log('pastSales', salesData);
 const columns = [
