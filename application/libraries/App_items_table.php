@@ -55,9 +55,11 @@ class App_items_table extends App_items_table_template
             // Open table row
             $itemHTML .= '<tr' . $this->tr_attributes($item) . '>';
 
-            // Table data number
-            $itemHTML .= '<td' . $this->td_attributes() . ' align="center" width="5%">' . $i . '</td>';
-
+            if($this->type == 'proposal'){
+                // Table data number
+                $itemHTML .= '<td' . $this->td_attributes() . ' align="center" width="5%">' . $i . '</td>';
+            }
+            
             $itemHTML .= '<td class="description" align="left;" width="' . $descriptionItemWidth . '%">';
 
             /**
@@ -248,7 +250,10 @@ class App_items_table extends App_items_table_template
     public function html_headings()
     {
         $html = '<tr>';
-        $html .= '<th align="center">' . $this->number_heading() . '</th>';
+        if($this->type == 'proposal'){
+            $html .= '<th align="center">' . $this->number_heading() . '</th>';
+        }
+        
         $html .= '<th class="description" width="' . $this->get_description_item_width() . '%" align="left">' . $this->item_heading() . '</th>';
 
         $customFieldsItems = $this->get_custom_fields_for_table();
@@ -327,8 +332,8 @@ class App_items_table extends App_items_table_template
 
         $tblhtml = '<tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">';
 
-        $tblhtml .= '<th width="5%;" align="center">' . $this->number_heading() . '</th>';
-        $tblhtml .= '<th width="' . $descriptionItemWidth . '%" align="left">' . $this->item_heading() . '</th>';
+        //$tblhtml .= '<th width="5%;" align="center">' . $this->number_heading() . '</th>';
+        $tblhtml .= '<th width="' . $descriptionItemWidth . '%" align="left">Product</th>';
 
         foreach ($customFieldsItems as $cf) {
             $tblhtml .= '<th width="' . $regularItemWidth . '%" align="left">' . $cf['name'] . '</th>';
@@ -338,7 +343,10 @@ class App_items_table extends App_items_table_template
 
         // BOF VK, Handle proposal incoterms data
         // VK Mod: Add
+        // print_r($this->transaction);
+        //     die;
         if (!empty($this->transaction->incoterms) && isset($this->transaction->incoterms['fob_port']) && $this->transaction->incoterms['fob_port'] && isset($this->transaction->incoterms['container_type']) && $this->transaction->incoterms['container_type'] && isset($this->transaction->incoterms['ports']) && $this->transaction->incoterms['ports']) {
+            
             foreach ($this->transaction->incoterms['fob_port'] as $fob_port) {
                 $filterId = $fob_port;
                 $port = array_filter($this->transaction->incoterms['ports'], function ($var) use ($filterId) {

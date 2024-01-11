@@ -85,6 +85,31 @@ class Invoices_model extends App_Model
      * @param  mixed $id
      * @return array|object
      */
+    public function get_forPDF($id = '', $where = []){
+        $this->db->select('*, ' . db_prefix() . 'currencies.id as currencyid, ' . db_prefix() . 'invoices.id as id, ' . db_prefix() . 'currencies.name as currency_name, ' . db_prefix() . 'countries.iso2, '.db_prefix() . 'proposals.id as proposal_id');
+        $this->db->from(db_prefix() . 'invoices');
+        $this->db->join(db_prefix() . 'currencies', '' . db_prefix() . 'currencies.id = ' . db_prefix() . 'invoices.currency', 'left');
+        $this->db->join(db_prefix() . 'proposals', db_prefix().'proposals.invoice_id='.db_prefix().'invoices.id', 'left');
+        $this->db->join(db_prefix().'countries', db_prefix().'countries.country_id='.db_prefix() . 'proposals.country', 'left');
+        $this->db->where(db_prefix() . 'invoices' . '.id', $id);
+        $invoice = $this->db->get()->row();
+        if($invoice){
+            $this->db->select(db_prefix().'itemable.*, '.db_prefix().'items.prod_link');
+            $this->db->where('rel_id', $invoice->proposal_id)->where('rel_type', 'proposal');
+            $this->db->from(db_prefix().'itemable');
+            $this->db->join(db_prefix().'items',db_prefix().'items.id='.db_prefix().'itemable.reference_item_id');
+            $invoice->items = $this->db->get()->result_array();
+        }
+        
+        return hooks()->apply_filters('get_invoice', $invoice);
+    }
+
+
+    /**
+     * Get invoice by id
+     * @param  mixed $id
+     * @return array|object
+     */
     public function get($id = '', $where = [])
     {
         $this->db->select('*, ' . db_prefix() . 'currencies.id as currencyid, ' . db_prefix() . 'invoices.id as id, ' . db_prefix() . 'currencies.name as currency_name');
@@ -384,10 +409,10 @@ class Invoices_model extends App_Model
             'data'  => $data,
             'items' => $items,
         ]);
-        
+
         $data  = $hook['data'];
         $items = $hook['items'];
-      
+
         $this->db->insert(db_prefix() . 'invoices', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -409,7 +434,7 @@ class Invoices_model extends App_Model
             //         'item_id'=>$proItem['reference_item_id'],
             //     ]);
             // }
-            
+
 
             foreach ($invoices_to_merge as $m) {
                 $merged   = false;
@@ -475,7 +500,7 @@ class Invoices_model extends App_Model
             foreach ($billed_tasks as $key => $tasks) {
                 foreach ($tasks as $t) {
                     $this->db->select('status')
-                    ->where('id', $t);
+                        ->where('id', $t);
 
                     $_task = $this->db->get(db_prefix() . 'tasks')->row();
 
@@ -509,14 +534,14 @@ class Invoices_model extends App_Model
             if (!$this->is_draft($insert_id)) {
                 $this->increment_next_number();
             }
-            
+
             foreach ($items as $key => $item) {
                 $this->db->where('description', $item['description']);
-                $isItem = $this->db->get(db_prefix().'items')->result_array();
+                $isItem = $this->db->get(db_prefix() . 'items')->result_array();
                 $item['reference_item_id'] = $isItem[0]['id'];
-               
+
                 if ($itemid = add_new_sales_item_post($item, $insert_id, 'invoice')) {
-                    
+
                     if (isset($billed_tasks[$key])) {
                         foreach ($billed_tasks[$key] as $_task_id) {
                             $this->db->insert(db_prefix() . 'related_items', [
@@ -757,13 +782,13 @@ class Invoices_model extends App_Model
         $invoices_to_merge         = isset($data['invoices_to_merge']) ? $data['invoices_to_merge'] : [];
         $billed_tasks              = isset($data['billed_tasks']) ? $data['billed_tasks'] : [];
         $billed_expenses           = isset($data['billed_expenses']) ?
-        array_map('unserialize', array_unique(array_map('serialize', $data['billed_expenses']))) :
-        [];
+            array_map('unserialize', array_unique(array_map('serialize', $data['billed_expenses']))) :
+            [];
         $data['cancel_overdue_reminders'] = isset($data['cancel_overdue_reminders']) ? 1 : 0;
         $data['cycles']                   = !isset($data['cycles']) ? 0 : $data['cycles'];
         $data['allowed_payment_modes']    = isset($data['allowed_payment_modes']) ?
-        serialize($data['allowed_payment_modes']) :
-        serialize([]);
+            serialize($data['allowed_payment_modes']) :
+            serialize([]);
 
         if (isset($data['recurring'])) {
             if ($data['recurring'] == 'custom') {
@@ -847,7 +872,7 @@ class Invoices_model extends App_Model
 
         $data              = $hook['data'];
         $items             = $hook['items'];
-	    $newitems         = $hook['new_items'];
+        $newitems         = $hook['new_items'];
         $removed_items     = $hook['removed_items'];
         $custom_fields     = $hook['custom_fields'];
         $billed_tasks      = $hook['billed_tasks'];
@@ -1107,14 +1132,14 @@ class Invoices_model extends App_Model
                     $item['qty'],
                 ]));
                 $this->db->where('invoice_id', $id);
-                $existStock = $this->db->get(db_prefix().'stocks')->result_array();
-                foreach($existStock as $stockData){
+                $existStock = $this->db->get(db_prefix() . 'stocks')->result_array();
+                foreach ($existStock as $stockData) {
                     $this->db->where('id', $id);
-                    $this->db->update(db_prefix().'stocks', [
-                        'quantity'=>$item['qty'] * ($existStock[0]['prod_ratio'] / 100) * -1,
+                    $this->db->update(db_prefix() . 'stocks', [
+                        'quantity' => $item['qty'] * ($existStock[0]['prod_ratio'] / 100) * -1,
                     ]);
                 }
-                
+
 
                 $updated = true;
             }
@@ -1152,7 +1177,7 @@ class Invoices_model extends App_Model
                 }
             }
         }
-        
+
         return $updated;
     }
 
@@ -1215,9 +1240,11 @@ class Invoices_model extends App_Model
      */
     public function delete($id, $simpleDelete = false)
     {
-        if (get_option('delete_only_on_last_invoice') == 1 &&
+        if (
+            get_option('delete_only_on_last_invoice') == 1 &&
             $simpleDelete == false &&
-            !is_last_invoice($id)) {
+            !is_last_invoice($id)
+        ) {
             return false;
         }
 
@@ -1236,10 +1263,12 @@ class Invoices_model extends App_Model
                 app_archive_short_link($invoice->short_link);
             }
 
-            if (get_option('invoice_number_decrement_on_delete') == 1 &&
-            get_option('next_invoice_number') > 1 &&
-            $simpleDelete == false &&
-            !$isDraft) {
+            if (
+                get_option('invoice_number_decrement_on_delete') == 1 &&
+                get_option('next_invoice_number') > 1 &&
+                $simpleDelete == false &&
+                !$isDraft
+            ) {
                 // Decrement next invoice number to
                 $this->decrement_next_number();
             }
@@ -1247,32 +1276,32 @@ class Invoices_model extends App_Model
             if ($simpleDelete == false) {
                 $this->db->where('invoiceid', $id);
                 $this->db->update(db_prefix() . 'expenses', [
-            'invoiceid' => null,
-        ]);
+                    'invoiceid' => null,
+                ]);
 
                 $this->db->where('invoice_id', $id);
                 $this->db->update(db_prefix() . 'proposals', [
-            'invoice_id'     => null,
-            'date_converted' => null,
-        ]);
+                    'invoice_id'     => null,
+                    'date_converted' => null,
+                ]);
 
                 $this->db->where('invoice_id', $id);
                 $this->db->update(db_prefix() . 'tasks', [
-            'invoice_id' => null,
-            'billed'     => 0,
-        ]);
+                    'invoice_id' => null,
+                    'billed'     => 0,
+                ]);
 
                 // if is converted from estimate set the estimate invoice to null
                 if (total_rows(db_prefix() . 'estimates', [
-            'invoiceid' => $id,
-        ]) > 0) {
+                    'invoiceid' => $id,
+                ]) > 0) {
                     $this->db->where('invoiceid', $id);
                     $estimate = $this->db->get(db_prefix() . 'estimates')->row();
                     $this->db->where('id', $estimate->id);
                     $this->db->update(db_prefix() . 'estimates', [
-                'invoiceid'     => null,
-                'invoiced_date' => null,
-            ]);
+                        'invoiceid'     => null,
+                        'invoiced_date' => null,
+                    ]);
                     $this->load->model('estimates_model');
                     $this->estimates_model->log_estimate_activity($estimate->id, 'not_estimate_invoice_deleted');
                 }
@@ -1339,8 +1368,8 @@ class Invoices_model extends App_Model
 
             $this->db->where('is_recurring_from', $id);
             $this->db->update(db_prefix() . 'invoices', [
-        'is_recurring_from' => null,
-    ]);
+                'is_recurring_from' => null,
+            ]);
 
             // Delete the custom field values
             $this->db->where('relid', $id);
@@ -1357,9 +1386,9 @@ class Invoices_model extends App_Model
             foreach ($tasks as $task) {
                 $this->db->where('id', $task['id']);
                 $this->db->update(db_prefix() . 'tasks', [
-            'invoice_id' => null,
-            'billed'     => 0,
-        ]);
+                    'invoice_id' => null,
+                    'billed'     => 0,
+                ]);
             }
 
             $attachments = $this->get_attachments($id);
@@ -1484,8 +1513,10 @@ class Invoices_model extends App_Model
                 $email_sent = true;
             }
 
-            if (can_send_sms_based_on_creation_date($invoice->datecreated)
-                && $this->app_sms->trigger(SMS_TRIGGER_INVOICE_OVERDUE, $contact['phonenumber'], $merge_fields)) {
+            if (
+                can_send_sms_based_on_creation_date($invoice->datecreated)
+                && $this->app_sms->trigger(SMS_TRIGGER_INVOICE_OVERDUE, $contact['phonenumber'], $merge_fields)
+            ) {
                 $sms_sent = true;
                 array_push($sms_reminder_log, $contact['firstname'] . ' (' . $contact['phonenumber'] . ')');
             }
@@ -1494,22 +1525,22 @@ class Invoices_model extends App_Model
         if ($email_sent || $sms_sent) {
             if ($email_sent) {
                 $this->log_invoice_activity($id, 'user_sent_overdue_reminder', false, serialize([
-                '<custom_data>' . implode(', ', $emails_sent) . '</custom_data>',
-                defined('CRON') ? ' ' : get_staff_full_name(),
-            ]));
+                    '<custom_data>' . implode(', ', $emails_sent) . '</custom_data>',
+                    defined('CRON') ? ' ' : get_staff_full_name(),
+                ]));
             }
 
             if ($sms_sent) {
                 $this->log_invoice_activity($id, 'sms_reminder_sent_to', false, serialize([
-               implode(', ', $sms_reminder_log),
-           ]));
+                    implode(', ', $sms_reminder_log),
+                ]));
             }
 
             hooks()->do_action('invoice_overdue_reminder_sent', [
-            'invoice_id' => $id,
-            'sent_to'    => $emails_sent,
-            'sms_send'   => $sms_sent,
-        ]);
+                'invoice_id' => $id,
+                'sent_to'    => $emails_sent,
+                'sms_send'   => $sms_sent,
+            ]);
 
             return true;
         }
@@ -1568,8 +1599,10 @@ class Invoices_model extends App_Model
                 $email_sent = true;
             }
 
-            if (can_send_sms_based_on_creation_date($invoice->datecreated)
-                && $this->app_sms->trigger(SMS_TRIGGER_INVOICE_DUE, $contact['phonenumber'], $merge_fields)) {
+            if (
+                can_send_sms_based_on_creation_date($invoice->datecreated)
+                && $this->app_sms->trigger(SMS_TRIGGER_INVOICE_DUE, $contact['phonenumber'], $merge_fields)
+            ) {
                 $sms_sent = true;
                 array_push($sms_reminder_log, $contact['firstname'] . ' (' . $contact['phonenumber'] . ')');
             }
@@ -1578,22 +1611,22 @@ class Invoices_model extends App_Model
         if ($email_sent || $sms_sent) {
             if ($email_sent) {
                 $this->log_invoice_activity($id, 'activity_due_reminder_is_sent', false, serialize([
-                '<custom_data>' . implode(', ', $emails_sent) . '</custom_data>',
-                defined('CRON') ? ' ' : get_staff_full_name(),
-            ]));
+                    '<custom_data>' . implode(', ', $emails_sent) . '</custom_data>',
+                    defined('CRON') ? ' ' : get_staff_full_name(),
+                ]));
             }
 
             if ($sms_sent) {
                 $this->log_invoice_activity($id, 'sms_reminder_sent_to', false, serialize([
-               implode(', ', $sms_reminder_log),
-           ]));
+                    implode(', ', $sms_reminder_log),
+                ]));
             }
 
             hooks()->do_action('invoice_due_reminder_sent', [
-            'invoice_id' => $id,
-            'sent_to'    => $emails_sent,
-            'sms_send'   => $sms_sent,
-        ]);
+                'invoice_id' => $id,
+                'sent_to'    => $emails_sent,
+                'sms_send'   => $sms_sent,
+            ]);
 
             return true;
         }
@@ -1624,8 +1657,8 @@ class Invoices_model extends App_Model
 
         if ($template_name == '') {
             $template_name = $invoice->sent == 0 ?
-            'invoice_send_to_customer' :
-            'invoice_send_to_customer_already_sent';
+                'invoice_send_to_customer' :
+                'invoice_send_to_customer_already_sent';
 
             $template_name = hooks()->apply_filters('after_invoice_sent_template_statement', $template_name);
         }

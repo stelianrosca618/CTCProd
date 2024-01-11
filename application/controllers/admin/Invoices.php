@@ -722,8 +722,8 @@ class Invoices extends AdminController
             }
         }
 
-        $invoice        = $this->invoices_model->get($id);
-        $invoice        = hooks()->apply_filters('before_admin_view_invoice_pdf', $invoice);
+        $invoice        = $this->invoices_model->get_forPDF($id);
+       // $invoice        = hooks()->apply_filters('before_admin_view_invoice_pdf', $invoice);
         $invoice_number = format_invoice_number($invoice->id);
 
         try {

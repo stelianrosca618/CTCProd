@@ -780,6 +780,20 @@ function handle_removed_sales_item_post($id, $rel_type)
 }
 
 /**
+ * When item is removed eq from invoice will be stored in removed_items in $_POST
+ * With foreach loop this function will remove the item from database and it's taxes
+ * @param  mixed $id       item id to remove
+ * @param  string $rel_type item relation eq. invoice, estimate
+ * @return boolena
+ */
+function getProposalNumber($id){
+    $CI = &get_instance();
+
+    $CI->db->where('id', $id);
+    $CI->db->get(db_prefix() . 'proposals');
+}
+
+/**
  * Remove taxes from item
  * @param  mixed $item_id  item id
  * @param  string $rel_type relation type eq. invoice, estimate etc.
