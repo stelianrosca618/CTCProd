@@ -1,5 +1,7 @@
 <?php
 
+use app\services\utilities\Date;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 $dimensions = $pdf->getPageDimensions();
 
@@ -173,7 +175,8 @@ foreach ($proposal->items as $prodItem) {
 $tableHtml .= '</table>';
 $tableHtml .= '<p><i>To view packing options and the data sheet, click on the product name</i></p>';
 $tableHtml .= '<p></p><p></p>';
-$tableHtml .= '<p><b>Shipment period: </b> '.$proposal->shipment_period.'</p>';
+$shipmentDate = date('F Y', strtotime($proposal->shipment_period));
+$tableHtml .= '<p><b>Shipment period: </b> '.$shipmentDate.'</p>';
 $tableHtml .= '<p><b>Terms: </b> 5% Perpayment, 95% cash against copy of documents</p>';
 $tableHtml .= '<p><b>MOQ: </b> '.$proposal->moq.'</p>';
 $tableHtml .= '<p></p><p></p>';
