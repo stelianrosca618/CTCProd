@@ -168,7 +168,7 @@
         .lastNote-description{
             width: 100%;
             padding: 0 0 10px 0;
-            color: #494949;
+            color: #858585;
         }
         .lastNote-date{
             width: 100%;
@@ -176,6 +176,7 @@
             font-style: italic;
             font-size: 11px;
             margin-bottom: 10px;
+            color: #858585;
         }
         
         select.form-control{

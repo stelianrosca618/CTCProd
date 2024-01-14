@@ -329,7 +329,7 @@
                 var contactDataHtml = '';
                 if(response.status == 'lead'){
                     var leadfields = {id: response.contact.id};
-                    leadfields.Products = null;
+                    /*leadfields.Products = null;
                     leadfields.prodId = null;
                     leadfields.forecast = null;
                     leadfields.forecastId = null;
@@ -340,7 +340,7 @@
                     leadfields.sampleId = null;
                     leadfields.trankIn = null;
                     leadfields.trankInid = null;
-                    leadfields.leadQuotation = null;
+                    leadfields.leadQuotation = null;*/
                     if(response.leadFields.length > 0){
                         response.leadFields.map(fItem => {
                             if(fItem.fieldid == 1){
@@ -409,7 +409,7 @@
                                                         <select name="country[]" class="w-full"></select>
                                                     </div>
                                                     <div class="contact-country-viewer">
-                                                        <span class="contact-country-span" id="${leadData.country}">${response.contact.short_name}</span>
+                                                        <span class="contact-country-span" id="${leadData.country}">${response.contact.short_name? response.contact.short_name : ''}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -480,34 +480,34 @@
                                                 <div class="data-value">
                                                     <input type="hidden" name="lead_customId" value="${leadfields.customId}" />
                                                     <input type="checkbox" name="dataSheet_check" id="dataSheet_check" class="seles-invoiced-checked lead-check" ${leadfields.dataSheetId? "checked" : "" }   readonly/>
-                                                    <input type="text" name="dataSheet_date" id=${leadfields.dataSheetId} value="${leadfields.dataSheet}" class="lead-input" readOnly/>
+                                                    <input type="text" name="dataSheet_date" id=${leadfields.dataSheetId} value="${leadfields.dataSheet?leadfields.dataSheet : ''}" class="lead-input" readOnly/>
                                                 </div>
                                             </div>
                                             <div class="contact-data-row">
                                                 <div class="data-Name">SAMPLES</div>
                                                 <div class="data-value">
                                                     <input type="checkbox" name="sample_check" id="sample_check" class="seles-invoiced-checked lead-check" ${leadfields.sampleId? "checked" : "" }  readonly/>
-                                                    <input type="text" name="sample_date" id=${leadfields.sampleId} value="${leadfields.samples}" class="lead-input" readOnly/>
+                                                    <input type="text" name="sample_date" id=${leadfields.sampleId} value="${leadfields.samples?leadfields.samples:''}" class="lead-input" readOnly/>
                                                 </div>
                                             </div>
                                             <div class="contact-data-row">
                                                 <div class="data-Name">TRACKING N</div>
                                                 <div class="data-value">
-                                                    <input type="text" name="trackNumber" id=${leadfields.trankInid} class="lead-input" value="${leadfields.trankIn}" readOnly/>
+                                                    <input type="text" name="trackNumber" id=${leadfields.trankInid} class="lead-input" value="${leadfields.trankIn == 'null'? '' : leadfields.trankIn }" readOnly/>
                                                 </div>
                                             </div>
                                             <div class="contact-data-row">
                                                 <div class="data-Name">FORECAST</div>
                                                 <div class="data-value">
                                                     <!--<span>${leadfields.forecast} mt/year</span>-->
-                                                    <input type="input" name="lead_forecast" id="${leadfields.forecastId}" class="lead-input" value="${leadfields.forecast}" readOnly  />
+                                                    <input type="input" name="lead_forecast" id="${leadfields.forecastId}" class="lead-input" value="${leadfields.forecast == 'null'? '':leadfields.forecast }" readOnly  />
                                                 </div>
                                             </div>
                                             <div class="contact-data-row">
                                                 <div class="data-Name">QUOTATION</div>
                                                 <div class="data-value">
                                                     <input type="checkbox" class="seles-invoiced-checked" ${leadfields.leadQuotation? 'checked' : ''} readonly/>
-                                                    <span>- ${leadfields.leadQuotation}</span>
+                                                    <span>- ${leadfields.leadQuotation?leadfields.leadQuotation:''}</span>
                                                     <!--<input type="input" name="status" class="lead-quatation" value="${leadfields.leadQuotation}" readOnly  />-->
                                                 </div>
                                             </div>
@@ -549,7 +549,7 @@
                                                         <select name="country[]" id="client-country" multiple="multiple"></select>
                                                     </div>
                                                     <div class="contact-country-viewer">
-                                                        <span class="contact-country-span" id="contryNames">${response.contact.countryNames}</span>
+                                                        <span class="contact-country-span" id="contryNames">${response.contact.countryNames? response.contact.countryNames : ''}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -661,22 +661,6 @@
                             <div class="box">
                                 <div class="box-content">
                                     
-                                    <div class="sales-information margin-top-medium">
-                                        <div class="light-box sales-card">
-                                            <div class="contact-card-head">
-                                                <button class="button button-small button-fixedNote-edit">Edit</button>
-                                                <div class="fixedNotes-update-btns hide">
-                                                    <button type="submit" class="button button-small button-fixedNote-update">Save</button>
-                                                    <button type="button" class="button button-small button-fixedNote-cancel">Cancel</button>
-                                                </div>
-                                                <h5 class="text-center"><img class="missive-img" src="/assets/images/missive/style-three-pin-user.png"/>Fixed Notes</h5>
-                                                <span></span>
-                                            </div>
-                                            <div class="contact-data-row">
-                                                <textarea class="fixedNote-text" date-noteId="${response.fixedNote_id}" rows="3" readOnly>${response.fixed_notes}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="sales-information margin-top-medium">
                                         <div class="light-box sales-card">
                                             <div class="contact-card-head">
