@@ -8,6 +8,7 @@
             if (isset($invoice)) {
                 echo form_hidden('isedit');
             }
+            
             ?>
             <div class="col-md-12">
                 <h4

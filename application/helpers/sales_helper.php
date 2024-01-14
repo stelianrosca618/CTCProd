@@ -705,11 +705,11 @@ function add_new_sales_item_post($item, $rel_id, $rel_type)
                 ]);
 
     $id = $CI->db->insert_id();
-
+    
     if ($custom_fields !== false) {
         handle_custom_fields_post($id, $custom_fields);
     }
-
+    
     return $id;
 }
 

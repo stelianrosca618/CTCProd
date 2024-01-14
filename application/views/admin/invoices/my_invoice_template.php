@@ -491,7 +491,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="<?php echo (!empty($proposal) && !empty($proposal->incoterms)) ? 'hide' : ''; ?>">
-                <?php $this->load->view('admin/invoice_items/item_select'); ?>
+                    <?php $this->load->view('admin/invoice_items/item_select'); ?>
                 </div>
             </div>
             <?php if (!isset($invoice_from_project) && isset($billable_tasks)) { ?>
@@ -565,7 +565,7 @@
         <?php if (isset($invoice_from_project)) {
                                 echo '<hr class="no-mtop" />';
                             } ?>
-        <div class="table-responsive s_table">
+        <div class="table-responsive s_table" style="overflow: auto;">
             <table class="table invoice-items-table items table-main-invoice-edit has-calculations no-mtop">
                 <thead>
                     <tr>
@@ -606,7 +606,7 @@
 
                                     $port_name = ($port) ? $port[0]['name'] : 'N/A';
                                     foreach ($proposal->incoterms['container_type'] as $container_type) {
-                                        $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                                        $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
                                         //$htmlOption .= '<li><a href="#" class="rate-list" data-id="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="FOB ('.$port_name.') '.$container_type.'">FOB ('.$port_name.') '.$container_type.'</a></li>';
                                         $htmlOption .= '<option class="rate-list" value="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">FOB ('.$port_name.') '.$prevContainer.'</option>';
                                     }
@@ -622,29 +622,73 @@
 
                                     $port_name = ($port) ? $port[0]['name'] : 'N/A';
                                     foreach ($proposal->incoterms['container_type'] as $container_type) {
-                                        $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                                        $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
                                         //$htmlOption .= '<li><a href="#" class="rate-list" data-id="cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="CFR ('.$port_name.') '.$container_type.'">CFR ('.$port_name.') '.$container_type.'</a></li>';
                                         $htmlOption .= '<option class="rate-list" value="cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">CFR ('.$port_name.') '.$prevContainer.'</option>';
                                     }
                                 } 
                             ?>
                             <div class="dropdown">
-                              <!-- <button class="btn btn-default dropdown-toggle" type="button" id="priceDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <!-- <button class="btn btn-default dropdown-toggle" type="button" id="priceDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 <span class="rate-name"><?php echo _l('invoice_table_rate_heading'); ?></span>
                                 <span class="caret"></span>
                               </button> -->
-                              
-                              <select class="selectpicker display-block itemRate-selector" multiple>
-                                <?php echo $htmlOption; ?>
-                              </select>
+
+                                <select class="selectpicker display-block itemRate-selector" name="itemRate-selector[]"
+                                    multiple>
+                                    <?php echo $htmlOption; ?>
+                                </select>
                             </div>
                             <?php
                             } else {
-                            // EOF VK, Handle proposal incoterms data
+                            
                             ?>
                             <?php echo _l('invoice_table_rate_heading'); ?>
                             <?php } ?>
                         </th>
+                        <?php 
+                        // EOF VK, Handle proposal incoterms data
+                        if(isset($invoice->incoterms)){
+                            foreach ($invoice->incoterms['fob_port'] as $fob_port) {
+                                $filterId = $fob_port;
+                                $port = array_filter($invoice->incoterms['ports'], function ($var) use ($filterId) {
+                                    return ($var['id'] == $filterId);
+                                });
+    
+                                $port = array_values($port);
+    
+                                $port_name = ($port) ? $port[0]['name'] : 'N/A';
+                                foreach ($invoice->incoterms['container_type'] as $container_type) {
+                                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
+                                    //$htmlOption .= '<li><a href="#" class="rate-list" data-id="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="FOB ('.$port_name.') '.$container_type.'">FOB ('.$port_name.') '.$container_type.'</a></li>';
+                             //       $htmlOption .= '<option class="rate-list" value="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">FOB ('.$port_name.') '.$prevContainer.'</option>';
+                                    ?>
+                                    <th width="20%" align="right"><?php echo 'FOB ('.$port_name.') '.$prevContainer.''; ?></th>
+                                    <?php
+                                }
+                            }
+                            foreach ($invoice->incoterms['cfr_port'] as $fob_port) {
+                                $filterId = $fob_port;
+                                $port = array_filter($invoice->incoterms['ports'], function ($var) use ($filterId) {
+                                    return ($var['id'] == $filterId);
+                                });
+    
+                                $port = array_values($port);
+    
+                                $port_name = ($port) ? $port[0]['name'] : 'N/A';
+                                foreach ($invoice->incoterms['container_type'] as $container_type) {
+                                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
+                                    //$htmlOption .= '<li><a href="#" class="rate-list" data-id="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="FOB ('.$port_name.') '.$container_type.'">FOB ('.$port_name.') '.$container_type.'</a></li>';
+                             //       $htmlOption .= '<option class="rate-list" value="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">FOB ('.$port_name.') '.$prevContainer.'</option>';
+                                    ?>
+                                    <th width="20%" align="right"><?php echo 'CFR ('.$port_name.') '.$prevContainer.''; ?></th>
+                                    <?php
+                                }
+                            }
+                        }
+                        
+
+                        ?>
                         <th width="20%" align="right"><?php echo _l('invoice_table_tax_heading'); ?></th>
                         <th width="10%" align="right"><?php echo _l('invoice_table_amount_heading'); ?></th>
                         <th align="center"><i class="fa fa-cog"></i></th>
@@ -673,6 +717,46 @@
                             <input type="number" name="rate" class="form-control rate-input"
                                 placeholder="<?php echo _l('item_rate_placeholder'); ?>">
                         </td>
+                        <?php
+                        if(isset($invoice->incoterms)){
+                            foreach ($invoice->incoterms['fob_port'] as $fob_port) {
+                                $filterId = $fob_port;
+                                $port = array_filter($invoice->incoterms['ports'], function ($var) use ($filterId) {
+                                    return ($var['id'] == $filterId);
+                                });
+    
+                                $port = array_values($port);
+    
+                                $port_name = ($port) ? $port[0]['name'] : 'N/A';
+                                foreach ($invoice->incoterms['container_type'] as $container_type) {
+                                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
+                                    //$htmlOption .= '<li><a href="#" class="rate-list" data-id="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="FOB ('.$port_name.') '.$container_type.'">FOB ('.$port_name.') '.$container_type.'</a></li>';
+                             //       $htmlOption .= '<option class="rate-list" value="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">FOB ('.$port_name.') '.$prevContainer.'</option>';
+                                    ?>
+                                    <td width="20%" align="right"><?php echo render_input('fob_rate') ?></td>
+                                    <?php
+                                }
+                            }
+                            foreach ($invoice->incoterms['cfr_port'] as $fob_port) {
+                                $filterId = $fob_port;
+                                $port = array_filter($invoice->incoterms['ports'], function ($var) use ($filterId) {
+                                    return ($var['id'] == $filterId);
+                                });
+    
+                                $port = array_values($port);
+    
+                                $port_name = ($port) ? $port[0]['name'] : 'N/A';
+                                foreach ($invoice->incoterms['container_type'] as $container_type) {
+                                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
+                                    //$htmlOption .= '<li><a href="#" class="rate-list" data-id="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="FOB ('.$port_name.') '.$container_type.'">FOB ('.$port_name.') '.$container_type.'</a></li>';
+                             //       $htmlOption .= '<option class="rate-list" value="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">FOB ('.$port_name.') '.$prevContainer.'</option>';
+                                    ?>
+                                    <td width="20%" align="right"><?php echo render_input('cfr_rate') ?></td>
+                                    <?php
+                                }
+                            }
+                        }
+                        ?>
                         <td>
                             <?php
                         $default_tax = unserialize(get_option('default_tax'));
@@ -720,6 +804,7 @@
                                     $item['qty'] = 1;
                                 }
 
+                                
                                 /// BOF VK, Handle proposal incoterms data
                                 // VK Mod: Add
                                 if (!empty($proposal) && !empty($proposal->items_incoterms)) {
@@ -729,9 +814,20 @@
                                     });
 
                                     $incoterms = array_values($incoterms);
-                                } else {
+                                } else if($invoice->items_incoterms){
+                                    $filterId = $item['id'];
+                                    $incoterms = array_filter($invoice->items_incoterms, function ($var) use ($filterId) {
+                                        return ($var['item_id'] == $filterId);
+                                    });
+
+                                    $incoterms = array_values($incoterms);
+                                    //print_r($incoterms);
+                                }else{
                                     $incoterms = array();
                                 }
+                                
+
+
                                 $item_rates[$i] = array();
                                 $item_rates[$i]['rate'] = $item['rate'];
 
@@ -766,25 +862,26 @@
                                 if (!empty($proposal) && !empty($proposal->incoterms) && !empty($proposal->items_incoterms) && $incoterms && ((isset($proposal->incoterms['fob_port']) && $proposal->incoterms['fob_port']) || (isset($proposal->incoterms['cfr_port']) && $proposal->incoterms['cfr_port'])) && isset($proposal->incoterms['container_type']) && $proposal->incoterms['container_type'] && isset($proposal->incoterms['ports']) && $proposal->incoterms['ports']) {
                                     foreach ($proposal->incoterms['fob_port'] as $fob_port) {
                                         $filterPortId = $fob_port;
+
                                         $freightIncoterm = array_filter($incoterms, function ($var) use ($filterPortId) {
                                             return ($var['freight_id'] == $filterPortId);
                                         });
-
+                                        
                                         $freightIncoterm = array_values($freightIncoterm);
 
                                         $incoterm = ($freightIncoterm) ? $freightIncoterm[0] : array('rate_fob_fcl_20' => $item['rate'], 'rate_fob_fcl_40' => $item['rate'], 'rate_fob_air' => $item['rate']);
 
                                         foreach ($proposal->incoterms['container_type'] as $container_type) {
                                             if ($container_type == '20 FCL') {
-                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_fob_fcl_20_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide" ><span class="hide">QTY</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_fcl_20_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide" ><span class="hide">QTY</span>';
                                             }
 
                                             if ($container_type == '40 FCL') {
-                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_fob_fcl_40_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_fcl_40_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
                                             }
 
-                                            if ($container_type == 'Air') {
-                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_fob_air_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
+                                            if (strtolower($container_type) == 'air') {
+                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_air_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
                                             }
                                         }
                                     }
@@ -800,15 +897,15 @@
 
                                         foreach ($proposal->incoterms['container_type'] as $container_type) {
                                             if ($container_type == '20 FCL') {
-                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_cfr_fcl_20_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_fcl_20_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
                                             }
 
                                             if ($container_type == '40 FCL') {
-                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_cfr_fcl_40_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_fcl_40_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
                                             }
 
-                                            if ($container_type == 'Air') {
-                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_cfr_fcl_air_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
+                                            if (strtolower($container_type) == 'air') {
+                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_air_qty]" value="' . $item['qty'] . '" class="form-control incoterm-qty-input hide"><span class="hide">QTY</span>';
                                             }
                                         }
                                     }
@@ -825,6 +922,15 @@
                                 if (!empty($proposal) && !empty($proposal->incoterms) && !empty($proposal->items_incoterms) && $incoterms && ((isset($proposal->incoterms['fob_port']) && $proposal->incoterms['fob_port']) || (isset($proposal->incoterms['cfr_port']) && $proposal->incoterms['cfr_port'])) && isset($proposal->incoterms['container_type']) && $proposal->incoterms['container_type'] && isset($proposal->incoterms['ports']) && $proposal->incoterms['ports']) {
                                     foreach ($proposal->incoterms['fob_port'] as $fob_port) {
                                         $filterPortId = $fob_port;
+
+                                        $port = array_filter($proposal->incoterms['ports'], function ($var) use ($filterPortId) {
+                                            return ($var['id'] == $filterPortId);
+                                        });
+    
+                                        $port = array_values($port);
+    
+                                        $port_name = ($port) ? $port[0]['name'] : 'N/A';
+
                                         $freightIncoterm = array_filter($incoterms, function ($var) use ($filterPortId) {
                                             return ($var['freight_id'] == $filterPortId);
                                         });
@@ -836,50 +942,135 @@
                                         foreach ($proposal->incoterms['container_type'] as $container_type) {
                                             if ($container_type == '20 FCL') {
                                                 $item_rates[$i]['fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $incoterm['rate_fob_fcl_20'];
-                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_fob_fcl_20]" value="' . $incoterm['rate_fob_fcl_20'] . '" class="form-control incoterm-input hide" ><span class="hide">FOB port 20</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_fcl_20]" value="' . $incoterm['rate_fob_fcl_20'] . '" class="form-control incoterm-input hide" ><span class="hide">FOB '.$port_name.' 20</span>';
                                             }
 
                                             if ($container_type == '40 FCL') {
                                                 $item_rates[$i]['fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $incoterm['rate_fob_fcl_40'];
-                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_fob_fcl_40]" value="' . $incoterm['rate_fob_fcl_40'] . '" class="form-control incoterm-input hide"><span class="hide">FOB port 40</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_fcl_40]" value="' . $incoterm['rate_fob_fcl_40'] . '" class="form-control incoterm-input hide"><span class="hide">FOB '.$port_name.' 40</span>';
                                             }
 
-                                            if ($container_type == 'Air') {
+                                            if (strtolower($container_type) == 'air') {
                                                 $item_rates[$i]['fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $incoterm['rate_fob_air'];
-                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_fob_air]" value="' . $incoterm['rate_fob_air'] . '" class="form-control incoterm-input hide"><span class="hide">FOB port Destination</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_air]" value="' . $incoterm['rate_fob_air'] . '" class="form-control incoterm-input hide"><span class="hide">FOB '.$port_name.' Destination</span>';
                                             }
                                         }
                                     }
 
                                     foreach ($proposal->incoterms['cfr_port'] as $cfr_port) {
                                         $filterPortId = $cfr_port;
+
+                                        $port = array_filter($proposal->incoterms['ports'], function ($var) use ($filterPortId) {
+                                            return ($var['id'] == $filterPortId);
+                                        });
+    
+                                        $port = array_values($port);
+    
+                                        $port_name = ($port) ? $port[0]['name'] : 'N/A';
+
                                         $freightIncoterm = array_filter($incoterms, function ($var) use ($filterPortId) {
                                             return ($var['freight_id'] == $filterPortId);
                                         });
 
                                         $freightIncoterm = array_values($freightIncoterm);
                                         $incoterm = ($freightIncoterm) ? $freightIncoterm[0] : array('rate_cfr_fcl_20' => $item['rate'], 'rate_cfr_fcl_40' => $item['rate'], 'rate_cfr_air' => $item['rate']);
-
+                                        // print_r($incoterm);
+                                        // die;
                                         foreach ($proposal->incoterms['container_type'] as $container_type) {
                                             if ($container_type == '20 FCL') {
                                                 $item_rates[$i]['cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $incoterm['rate_cfr_fcl_20'];
-                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_cfr_fcl_20]" value="' . $incoterm['rate_cfr_fcl_20'] . '" class="form-control incoterm-input hide"><span class="hide">CFR port 20</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_fcl_20]" value="' . $incoterm['rate_cfr_fcl_20'] . '" class="form-control incoterm-input hide"><span class="hide">CFR '.$port_name.' 20</span>';
                                             }
 
                                             if ($container_type == '40 FCL') {
                                                 $item_rates[$i]['cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $incoterm['rate_cfr_fcl_40'];
-                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_cfr_fcl_40]" value="' . $incoterm['rate_cfr_fcl_40'] . '" class="form-control incoterm-input hide"><span class="hide">CFR port 40</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_fcl_40]" value="' . $incoterm['rate_cfr_fcl_40'] . '" class="form-control incoterm-input hide"><span class="hide">CFR '.$port_name.' 40</span>';
                                             }
 
-                                            if ($container_type == 'Air') {
+                                            if (strtolower($container_type) == 'air') {
                                                 $item_rates[$i]['cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $incoterm['rate_cfr_air'];
-                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate_cfr_fcl_air]" value="' . $incoterm['rate_cfr_fcl_air'] . '" class="form-control incoterm-input hide"><span class="hide">CFR port Destination</span>';
+                                                $table_row .= '<input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_air]" value="' . $incoterm['rate_cfr_air'] . '" class="form-control incoterm-input hide"><span class="hide">CFR '.$port_name.' Destination</span>';
                                             }
                                         }
                                     }
                                 } 
                                 // EOF VK, Handle proposal incoterms data
                                 $table_row .= '</td>';
+                                //print_r($incoterms);
+                                if(isset($invoice->incoterms)){
+                                    
+                                    foreach ($invoice->incoterms['fob_port'] as $fob_port) {
+                                        
+                                        $filterId = $fob_port;
+                                        $port = array_filter($invoice->incoterms['ports'], function ($var) use ($filterId) {
+                                            return ($var['id'] == $filterId);
+                                        });
+            
+                                        $port = array_values($port);
+            
+                                        $port_name = ($port) ? $port[0]['name'] : 'N/A';
+                                        $freightIncoterm = array_filter($incoterms, function ($var) use ($filterId) {
+                                            return ($var['freight_id'] == $filterId);
+                                        });
+
+                                        $freightIncoterm = array_values($freightIncoterm);
+                                        $freightIncoterm = ($freightIncoterm) ? $freightIncoterm[0] : array('rate_fob_fcl_20' => $item['rate'], 'rate_fob_fcl_40' => $item['rate'], 'rate_fob_air' => $item['rate']);
+                                        foreach ($invoice->incoterms['container_type'] as $container_type) {
+                                            if ($container_type == '20 FCL') {
+                                                $item_rates[$i]['fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $freightIncoterm['rate_fob_fcl_20'];
+                                                $table_row .= '<td><input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_fcl_20]" value="' . $freightIncoterm['rate_fob_fcl_20'] . '" class="form-control incoterm-input" ></td>';
+                                            }
+
+                                            if ($container_type == '40 FCL') {
+                                                $item_rates[$i]['fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $freightIncoterm['rate_fob_fcl_40'];
+                                                $table_row .= '<td><input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_fcl_40]" value="' . $freightIncoterm['rate_fob_fcl_40'] . '" class="form-control incoterm-input"></td>';
+                                            }
+
+                                            if (strtolower($container_type) == 'air') {
+                                                $item_rates[$i]['fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $freightIncoterm['rate_fob_air'];
+                                                $table_row .= '<td><input type="number" data-label="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_fob_air]" value="' . $freightIncoterm['rate_fob_air'] . '" class="form-control incoterm-input"></td>';
+                                            }
+                                        }
+                                        
+                                    }
+                                    foreach ($invoice->incoterms['cfr_port'] as $cfr_port) {
+                                        $filterId = $cfr_port;
+                                        
+                                        $port = array_filter($invoice->incoterms['ports'], function ($var) use ($filterId) {
+                                            return ($var['id'] == $filterId);
+                                        });
+            
+                                        $port = array_values($port);
+            
+                                        $port_name = ($port) ? $port[0]['name'] : 'N/A';
+                                        $freightIncoterm = array_filter($incoterms, function ($var) use ($filterId) {
+                                            return ($var['freight_id'] == $filterId);
+                                        });
+
+                                        $freightIncoterm = array_values($freightIncoterm);
+                                        $freightIncoterm = ($freightIncoterm) ? $freightIncoterm[0] : array('rate_fob_fcl_20' => $item['rate'], 'rate_fob_fcl_40' => $item['rate'], 'rate_fob_air' => $item['rate']);
+                                        foreach ($invoice->incoterms['container_type'] as $container_type) {
+                                            print_r($filterId);
+                                            print_r('-/-');
+                                           
+                                            if ($container_type == '20 FCL') {
+                                                $item_rates[$i]['cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $freightIncoterm['rate_cfr_fcl_20'];
+                                                $table_row .= '<td><input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_fcl_20]" value="' . $freightIncoterm['rate_cfr_fcl_20'] . '" class="form-control incoterm-input"></td>';
+                                            }
+
+                                            if ($container_type == '40 FCL') {
+                                                $item_rates[$i]['cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $freightIncoterm['rate_cfr_fcl_40'];
+                                                $table_row .= '<td><input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_fcl_40]" value="' . $freightIncoterm['rate_cfr_fcl_40'] . '" class="form-control incoterm-input"></td>';
+                                            }
+
+                                            if (strtolower($container_type) == 'air') {
+                                                print_r($freightIncoterm['rate_cfr_air']);
+                                                $item_rates[$i]['cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type))] = $freightIncoterm['rate_cfr_air'];
+                                                $table_row .= '<td><input type="number" data-label="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" data-toggle="tooltip" title="' . 'cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)) . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][incoterms]['.$filterPortId.'][rate_cfr_air]" value="' . $freightIncoterm['rate_cfr_air'] . '" class="form-control incoterm-input"></td>';
+                                            }
+                                        }
+                                    }
+                                }
                                 $table_row .= '<td class="taxrate">' . $this->misc_model->get_taxes_dropdown_template('' . $items_indicator . '[' . $i . '][taxname][]', $invoice_item_taxes, 'invoice', $item['id'], true, $manual) . '</td>';
                                 $table_row .= '<td class="amount" align="right">' . $amount . '</td>';
                                 $table_row .= '<td><a href="#" class="btn btn-danger pull-left" onclick="delete_item(this,' . $item['id'] . '); return false;"><i class="fa fa-times"></i></a></td>';
@@ -1062,12 +1253,10 @@
 
 <?php if ($item_rates) { ?>
 <script type="text/javascript">
-    var items_rates = <?php echo json_encode($item_rates); ?>;
-   
-     
+var items_rates = <?php echo json_encode($item_rates); ?>;
 </script>
 <?php } else { ?>
 <script type="text/javascript">
-    var items_rates = [];
+var items_rates = [];
 </script>
 <?php } ?>

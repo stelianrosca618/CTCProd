@@ -7696,8 +7696,12 @@ function calculate_total() {
       var _interComAmount = 0;
       $(this).find('.incoterm-input').each((id, ele) => {
         //console.log($(this).find('.incoterm-qty-input')[id].value, ele.value);
+        console.log($(this));
         if(!ele.classList.contains("hide")){
-          var inCoTerQty = parseFloat($(this).find('.incoterm-qty-input')[id].value);
+          var inCoTerQty = 1.0;
+          if($(this).find('.incoterm-qty-input').length > 0){
+            inCoTerQty = parseFloat($(this).find('.incoterm-qty-input')[id].value);
+          }
           var inCoTermval = accounting.toFixed(
             ele.value * inCoTerQty,
             app.options.decimal_places

@@ -80,7 +80,7 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
 
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = $container_type == 'Air' ? 'Destination' : $container_type;
+        $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
         $html .= '<th align="right" style="' . $rateThStyle . '">FOB (' . $port_name . ') ' . $prevContainer . '</th>';
     }
 }
@@ -97,7 +97,7 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
     
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = $container_type == 'Air' ? 'Destination' : $container_type;
+        $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
         $tableHtml .= '<th align="right" style="' . $rateThStyle . '">CFR (' . $port_name . ') ' . $prevContainer . '</th>';
     }
 }
@@ -139,7 +139,7 @@ foreach ($proposal->items as $prodItem) {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
 
-                if ($container_type == 'Air') {
+                if (strtolower($container_type) == 'air') {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
             }
@@ -163,7 +163,7 @@ foreach ($proposal->items as $prodItem) {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
 
-                if ($container_type == 'Air') {
+                if (strtolower($container_type) == 'air') {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
             }

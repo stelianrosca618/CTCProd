@@ -428,13 +428,18 @@ class Proposals extends AdminController
         if ($this->input->post()) {
             $this->load->model('invoices_model');
             $postedData = $this->input->post();
-            
+            $invoicePorts = null;
+            if(isset($postedData['itemRate-selector'])){
+                $invoicePorts = genInvoice_port($postedData['itemRate-selector']);
+                unset($postedData['itemRate-selector']);
+                
+            }
             $this->db->where('userid', $postedData['clientid']);
             $companyData =$this->db->get(db_prefix().'clients')->result_array();
             // print_r($companyData);
             // die;
             
-            $invoice_id = $this->invoices_model->add($this->input->post());
+            $invoice_id = $this->invoices_model->add($postedData);
             if ($invoice_id) {
                 set_alert('success', _l('proposal_converted_to_invoice_success'));
                 $this->db->where('id', $id);
@@ -488,6 +493,10 @@ class Proposals extends AdminController
                         'Quantity' => $proItem['qty'] * ($prodRatio / 100),
                         "Price" => $proItem['rate'] * $proItem['qty'] * ($prodRatio / 100),
                     ]);
+                    $this->db->where('rel_type', 'proposal')->where('rel_id', $id)->where('reference_item_id', $isItem[0]['id']);
+                    $posalItem = $this->db->get(db_prefix().'itemable')->row();
+
+                    handle_itemable_incoterms_update($id, $invoice_id, $posalItem->id, $proItem['incoterms'], $invoicePorts);
                 }
                 
                 log_activity('Proposal Converted to Invoice [InvoiceID: ' . $invoice_id . ', ProposalID: ' . $id . ']');

@@ -131,7 +131,7 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
 
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = $container_type == 'Air' ? 'Destination' : $container_type;
+        $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
         $html .= '<th align="right" style="' . $rateThStyle . '">FOB (' . $port_name . ') ' . $prevContainer . '</th>';
         $totalColSpan++;
         if ($container_type == '20 FCL') {
@@ -146,7 +146,7 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
                 'qty' => 0,
             ];
         }
-        if ($container_type == 'Air') {
+        if (strtolower($container_type) == 'air') {
             $interComTotal['total_fob_air_'.$fob_port] = [
                 'rate' => 0,
                 'qty' => 0,
@@ -166,7 +166,7 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
     
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = $container_type == 'Air' ? 'Destination' : $container_type;
+        $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
         $tableHtml .= '<th align="right" style="' . $rateThStyle . '">CFR (' . $port_name . ') ' . $prevContainer . '</th>';
         $totalColSpan++;
         if ($container_type == '20 FCL') {
@@ -181,7 +181,7 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
                 'qty' => 0,
             ];
         }
-        if ($container_type == 'Air') {
+        if (strtolower($container_type) == 'air') {
             $interComTotal['total_cfr_air_'.$cfr_port] = [
                 'rate' => 0,
                 'qty' => 0,
@@ -238,7 +238,7 @@ foreach ($invoice->items as $prodItem) {
                     ];
                 }
 
-                if ($container_type == 'Air') {
+                if (strtolower($container_type) == 'air') {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_fob_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_fob_air_'.$fob_port] = [
                         'rate' => $interComTotal['total_fob_air_'.$fob_port]['rate'] + (float)$incoterm['rate_fob_air'],
@@ -274,7 +274,7 @@ foreach ($invoice->items as $prodItem) {
                     ];
                 }
 
-                if ($container_type == 'Air') {
+                if (strtolower($container_type) == 'air') {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_cfr_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_cfr_air_'.$cfr_port] = [
                         'rate' => $interComTotal['total_cfr_air_'.$cfr_port]['rate'] + (float)$incoterm['rate_cfr_air'],

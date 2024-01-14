@@ -121,8 +121,14 @@ class Invoices_model extends App_Model
             $invoice = $this->db->get()->row();
             if ($invoice) {
                 $invoice->total_left_to_pay = get_invoice_total_left_to_pay($invoice->id, $invoice->total);
+                $proposalData = $this->db->where('invoice_id', $id)->get(db_prefix().'proposals')->row();
+                //$invoice->items       = get_items_by_type('invoice', $id);
+                $invoice->items       = get_items_by_type('proposal', $proposalData->id);
+                
+                $invoice->items_incoterms = $this->db->where('proposal_id', $proposalData->id)->get(db_prefix().'itemable_incoterms')->result_array();
+                $invoice->incoterms = get_invoice_incoterms_data($id);
 
-                $invoice->items       = get_items_by_type('invoice', $id);
+
                 $invoice->attachments = $this->get_attachments($id);
 
                 if ($invoice->project_id) {
@@ -355,7 +361,7 @@ class Invoices_model extends App_Model
         $cancel_merged_invoices = isset($data['cancel_merged_invoices']);
 
         $tags = isset($data['tags']) ? $data['tags'] : '';
-
+        
         if (isset($data['save_as_draft'])) {
             $data['status'] = self::STATUS_DRAFT;
             unset($data['save_as_draft']);
@@ -388,7 +394,12 @@ class Invoices_model extends App_Model
             $items = $data['newitems'];
             unset($data['newitems']);
         }
-
+        // print_r($data);
+        // print_r('<br />');
+        // print_r($invoicePorts);
+        // print_r('<br />');
+       
+        // die;
         $data = $this->map_shipping_columns($data, $expense);
 
         if (isset($data['shipping_street'])) {
@@ -559,6 +570,7 @@ class Invoices_model extends App_Model
                             ]);
                         }
                     }
+                    
                     _maybe_insert_post_item_tax($itemid, $item, $insert_id, 'invoice');
                 }
             }

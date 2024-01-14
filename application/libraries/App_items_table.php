@@ -173,7 +173,7 @@ class App_items_table extends App_items_table_template
                             $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_fob_fcl_40'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
 
-                        if ($container_type == 'Air') {
+                        if (strtolower($container_type) == 'air') {
                             $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_fob_air'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
                     }
@@ -202,7 +202,7 @@ class App_items_table extends App_items_table_template
                             $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_cfr_fcl_40'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
 
-                        if ($container_type == 'Air') {
+                        if (strtolower($container_type) == 'air') {
                             $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_cfr_air'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
                     }
@@ -283,7 +283,7 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
                     $html .= '<th align="right">FOB ('.$port_name.') '.$prevContainer.'</th>';
                 }
             }
@@ -302,7 +302,7 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
                     $html .= '<th align="right">CFR ('.$port_name.') '.$prevContainer.'</th>';
                 }
             }            
@@ -357,7 +357,7 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
                     $tblhtml .= '<th width="' . $regularItemWidth . '%" align="left">FOB ('.$port_name.') '.$prevContainer.'</th>';
                 }
             }
@@ -376,7 +376,7 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $prevContainer = $container_type == 'Air'? 'Destination' : $container_type;
+                    $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
                     $tblhtml .= '<th width="' . $regularItemWidth . '%" align="left">CFR ('.$port_name.') '.$prevContainer.'</th>';
                 }
             }            
