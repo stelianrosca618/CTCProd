@@ -73,15 +73,16 @@
                     </li>
                     <li role="presentation" class="tab-separator">
                         <a href="#tab_templates"
-                            onclick="get_templates('proposals', <?php echo $proposal->id ?? '' ?>); return false"
+                            onclick="get_templates('Bank', <?php echo $proposal->id ?? '' ?>); return false"
                             aria-controls="tab_templates" role="tab" data-toggle="tab">
                             <?php
                              echo _l('templates');
-                            $conditions = ['type' => 'proposals'];
+                            $conditions = ['type' => 'Bank'];
                             if (!staff_can('view_all_templates', 'proposals')) {
                                 $conditions['addedfrom'] = get_staff_user_id();
-                                $conditions['type']      = 'proposals';
+                               // $conditions['type']      = 'proposals';
                             }
+                            
                             $total_templates = total_rows(db_prefix() . 'templates', $conditions);
                             ?>
                             <span

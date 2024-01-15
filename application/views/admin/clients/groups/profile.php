@@ -173,9 +173,9 @@
                             </div>
                             <?php } ?>
                         </div>
-
+                        <?php echo render_select('template', $templates, ['id', 'name'], 'Template', $templateData->id); ?>
                         <hr />
-
+                        
                         <?php $value = (isset($client) ? $client->address : ''); ?>
                         <?php echo render_textarea('address', 'client_address', $value); ?>
                         <?php $value = (isset($client) ? $client->city : ''); ?>

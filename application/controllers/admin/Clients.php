@@ -88,6 +88,13 @@ class Clients extends AdminController
                 $data = $this->input->post();
                 // print_r($data);
                 // die;
+                if(isset($data['template'])){
+                    $templateData = $data['template'];
+                    unset($data['template']);
+                    $this->db->where('id', $templateData)->update(db_prefix().'templates', [
+                        'addedfrom' => $id,
+                    ]);
+                }
                 $save_and_add_contact = false;
                 if (isset($data['save_and_add_contact'])) {
                     unset($data['save_and_add_contact']);
@@ -115,8 +122,15 @@ class Clients extends AdminController
                     }
                 }
                 $data = $this->input->post();
+                if(isset($data['template'])){
+                    $templateData = $data['template'];
+                    unset($data['template']);
+                }
                 $data['country'] = implode(', ', $data['country']);
                 $success = $this->clients_model->update($data, $id);
+                $this->db->where('id', $templateData)->update(db_prefix().'templates', [
+                    'addedfrom' => $id,
+                ]);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('client')));
                 }
@@ -133,7 +147,8 @@ class Clients extends AdminController
 
         // Customer groups
         $data['groups'] = $this->clients_model->get_groups();
-
+        $data['templates'] = $this->db->get(db_prefix().'templates')->result_array();
+        $data['templateData'] = $this->db->where('addedfrom', $id)->get(db_prefix().'templates')->row();
         if ($id == '') {
             $title = _l('add_new', _l('client_lowercase'));
         } else {

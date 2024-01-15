@@ -9063,7 +9063,8 @@ function update_templates_count(type) {
 }
 
 function get_templates(rel_type, rel_id) {
-  if (rel_type === "proposals") {
+  console.log('teling', rel_type, rel_id);
+  if (rel_type === "Bank") {
     $("#proposal-templates").load(
       admin_url + "templates",
       {

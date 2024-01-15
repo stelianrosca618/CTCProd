@@ -1,5 +1,7 @@
 <?php
 
+use app\services\utilities\Date;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
@@ -149,11 +151,15 @@ function format_proposal_status($status, $classes = '', $label = true)
  */
 function format_proposal_number($id)
 {
-    $format = get_option('proposal_number_prefix') . str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
+    $CI = &get_instance();
+    $CI->db->where('id', $id);
+    $proposal = $CI->db->get(db_prefix() . 'proposals')->row();
+    $yearStr = date('Y', strtotime($proposal->date));
+    
+    $format = get_option('proposal_number_prefix') . $yearStr .'-'. str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
 
     return hooks()->apply_filters('proposal_number_format', $format, $id);
 }
-
 
 /**
  * Function that return proposal item taxes based on passed item id

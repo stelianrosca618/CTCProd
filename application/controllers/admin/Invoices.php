@@ -72,7 +72,6 @@ class Invoices extends AdminController
                 $this->db->insert(db_prefix().'templates', [
                     'name' => $data['name'],
                     'type' => $data['group'],
-                    'addedfrom' => 1,
                     'content' => $data['content']
                 ]);
             }
