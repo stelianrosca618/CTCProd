@@ -226,7 +226,7 @@ foreach ($invoice->items as $prodItem) {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_fob_fcl_20'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_fob_fcl_20_'.$fob_port] = [
                         'rate' => $interComTotal['total_fob_fcl_20_'.$fob_port]['rate'] + (float)$incoterm['rate_fob_fcl_20'],
-                        'qty' => $interComTotal['total_fob_fcl_20_'.$fob_port]['qty'] + (float)$prodItem['qty'],
+                        'qty' => $interComTotal['total_fob_fcl_20_'.$fob_port]['qty'] + (float)$incoterm['qty_fob_fcl_20'],
                     ];
                 }
 
@@ -234,7 +234,7 @@ foreach ($invoice->items as $prodItem) {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_fob_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_fob_fcl_40_'.$fob_port] = [
                         'rate' => $interComTotal['total_fob_fcl_40_'.$fob_port]['rate'] + (float)$incoterm['rate_fob_fcl_40'],
-                        'qty' => $interComTotal['total_fob_fcl_40_'.$fob_port]['qty'] + (float)$prodItem['qty'],
+                        'qty' => $interComTotal['total_fob_fcl_40_'.$fob_port]['qty'] + (float)$incoterm['qty_fob_fcl_40'],
                     ];
                 }
 
@@ -242,7 +242,7 @@ foreach ($invoice->items as $prodItem) {
                     $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_fob_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_fob_air_'.$fob_port] = [
                         'rate' => $interComTotal['total_fob_air_'.$fob_port]['rate'] + (float)$incoterm['rate_fob_air'],
-                        'qty' => $interComTotal['total_fob_air_'.$fob_port]['qty'] + (float)$prodItem['qty'],
+                        'qty' => $interComTotal['total_fob_air_'.$fob_port]['qty'] + (float)$incoterm['qty_fob_air'],
                     ];
                 }
             }
@@ -259,26 +259,26 @@ foreach ($invoice->items as $prodItem) {
 
             foreach ($interComeHd['container_type'] as $container_type) {
                 if ($container_type == '20 FCL') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_cfr_fcl_20'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . $incoterm['qty_cfr_fcl_20'] . ' mt - ' . app_format_money($incoterm['rate_cfr_fcl_20'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_cfr_fcl_20_'.$cfr_port] = [
                         'rate' => $interComTotal['total_cfr_fcl_20_'.$cfr_port]['rate'] + (float)$incoterm['rate_cfr_fcl_20'],
-                        'qty' => $interComTotal['total_cfr_fcl_20_'.$cfr_port]['qty'] + (float)$prodItem['qty'],
+                        'qty' => $interComTotal['total_cfr_fcl_20_'.$cfr_port]['qty'] + (float)$incoterm['qty_cfr_fcl_20'],
                     ];
                 }
 
                 if ($container_type == '40 FCL') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_cfr_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . $incoterm['qty_cfr_fcl_40'] . ' mt - ' . app_format_money($incoterm['rate_cfr_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_cfr_fcl_40_'.$cfr_port] = [
                         'rate' => $interComTotal['total_cfr_fcl_40_'.$cfr_port]['rate'] + (float)$incoterm['rate_cfr_fcl_40'],
-                        'qty' => $interComTotal['total_cfr_fcl_40_'.$cfr_port]['qty'] + (float)$prodItem['qty'],
+                        'qty' => $interComTotal['total_cfr_fcl_40_'.$cfr_port]['qty'] + (float)$incoterm['qty_cfr_fcl_40'],
                     ];
                 }
 
                 if (strtolower($container_type) == 'air') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . $prodItem['qty'] . ' mt - ' . app_format_money($incoterm['rate_cfr_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . $incoterm['qty_cfr_air'] . ' mt - ' . app_format_money($incoterm['rate_cfr_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                     $interComTotal['total_cfr_air_'.$cfr_port] = [
                         'rate' => $interComTotal['total_cfr_air_'.$cfr_port]['rate'] + (float)$incoterm['rate_cfr_air'],
-                        'qty' => $interComTotal['total_cfr_air_'.$cfr_port]['qty'] + (float)$prodItem['qty'],
+                        'qty' => $interComTotal['total_cfr_air_'.$cfr_port]['qty'] + (float)$incoterm['qty_cfr_air'],
                     ];
                 }
             }

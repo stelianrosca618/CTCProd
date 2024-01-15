@@ -166,15 +166,15 @@ class App_items_table extends App_items_table_template
 
                     foreach ($this->transaction->incoterms['container_type'] as $container_type) {
                         if ($container_type == '20 FCL') {
-                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_fob_fcl_20'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
+                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">'.$incoterm['qty_fob_fcl_20'].'*' . app_format_money($incoterm['rate_fob_fcl_20'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
 
                         if ($container_type == '40 FCL') {
-                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_fob_fcl_40'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
+                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">'.$incoterm['qty_fob_fcl_40'].'*' . app_format_money($incoterm['rate_fob_fcl_40'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
 
                         if (strtolower($container_type) == 'air') {
-                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_fob_air'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
+                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">'.$incoterm['qty_fob_air'].'*' . app_format_money($incoterm['rate_fob_air'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
                     }
                 }
@@ -195,15 +195,15 @@ class App_items_table extends App_items_table_template
 
                     foreach ($this->transaction->incoterms['container_type'] as $container_type) {
                         if ($container_type == '20 FCL') {
-                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_cfr_fcl_20'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
+                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">'.$incoterm['qty_cfr_fcl_20'].'*' . app_format_money($incoterm['rate_cfr_fcl_20'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
 
                         if ($container_type == '40 FCL') {
-                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_cfr_fcl_40'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
+                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">'.$incoterm['qty_cfr_fcl_40'].'*' . app_format_money($incoterm['rate_cfr_fcl_40'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
 
                         if (strtolower($container_type) == 'air') {
-                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">' . app_format_money($incoterm['rate_cfr_air'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
+                            $itemHTML .= '<td align="right" width="' . $regularItemWidth . '%">'.$incoterm['qty_cfr_air'].'*' . app_format_money($incoterm['rate_cfr_air'], $this->transaction->currency_name, $this->exclude_currency()) . ' '. $this->transaction->currency_name .'/' . $item['unit'] . '</td>';
                         }
                     }
                 }

@@ -224,6 +224,17 @@ function genInvoice_port($invoice_port){
 
 	return $portData;
 }
+function handle_invoice_incoterm_insert($invoiceid, $incoterms){
+	$CI = &get_instance();
+	$CI->db->insert(db_prefix().'invoice_ports', [
+		'invoice_id' => $invoiceid,
+		'fob_port' => json_encode($incoterms['fob_port']),
+		'cfr_port' => json_encode($incoterms['cfr_port']),
+		'container_type' => json_encode($incoterms['container_type']),
+		'rate_port' => $incoterms['rate_port'],
+		'exchange_rate' => $incoterms['exchange_rate']
+	]);
+}
 function handle_itemable_incoterms_update($proposalid, $invoiceid, $itemid, $item_incoterms, $incoterms){
 	$freights = array();
 
@@ -236,14 +247,14 @@ function handle_itemable_incoterms_update($proposalid, $invoiceid, $itemid, $ite
 	}
 
 	$CI = &get_instance();
-	$CI->db->insert(db_prefix().'invoice_ports', [
-		'invoice_id' => $invoiceid,
-		'fob_port' => json_encode($incoterms['fob_port']),
-		'cfr_port' => json_encode($incoterms['cfr_port']),
-		'container_type' => json_encode($incoterms['container_type']),
-		'rate_port' => $incoterms['rate_port'],
-		'exchange_rate' => $incoterms['exchange_rate']
-	]);
+	// $CI->db->insert(db_prefix().'invoice_ports', [
+	// 	'invoice_id' => $invoiceid,
+	// 	'fob_port' => json_encode($incoterms['fob_port']),
+	// 	'cfr_port' => json_encode($incoterms['cfr_port']),
+	// 	'container_type' => json_encode($incoterms['container_type']),
+	// 	'rate_port' => $incoterms['rate_port'],
+	// 	'exchange_rate' => $incoterms['exchange_rate']
+	// ]);
 	if($freights){
 		$itemable_incoterms_data = array();
 		foreach($freights as $freight) {

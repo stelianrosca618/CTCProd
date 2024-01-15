@@ -455,7 +455,11 @@ class Proposals extends AdminController
                 $this->db->from(db_prefix().'itemable');
                 $this->db->join(db_prefix().'items', db_prefix().'items.id = '.db_prefix().'itemable.reference_item_id');
                 $proItems = $this->db->get()->result_array();*/
+                if($invoicePorts){
+                    handle_invoice_incoterm_insert($invoice_id, $invoicePorts);
+                }
                 
+
                 foreach($postedData['newitems'] as $proItem){
                     $this->db->where('description', $proItem['description']);
                     $isItem = $this->db->get(db_prefix().'items')->result_array();
