@@ -80,6 +80,7 @@ function get_invoice_incoterms_data($invoiceid)
     		'cfr_port' => (!empty($row_array['cfr_port']) ? json_decode($row_array['cfr_port'], true) : array()),
     		'container_type' => (!empty($row_array['container_type']) ? json_decode($row_array['container_type'], true) : array()),
     		'exchange_rate' => $row_array['exchange_rate'],
+			'isRate' => $row_array['rate_port'],
     	);
 
     	$row_data['ports'] = array();
@@ -104,7 +105,8 @@ function get_invoice_incoterms_data($invoiceid)
 		        	'name' => $freight_row['port'],
 		        	'fcl_20' => $freight_row['fcl_20'],
 		        	'fcl_40' => $freight_row['fcl_40'],
-		        	'air' => $freight_row['air']
+		        	'air' => $freight_row['air'],
+					'isRate' => $freight_row['isRate'],
 		        );
 		    }
 	    }

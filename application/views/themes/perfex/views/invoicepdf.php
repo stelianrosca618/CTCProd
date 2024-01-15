@@ -107,7 +107,8 @@ $pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 6));
 
 //The product table
 
-$interComeHd = get_proposal_incoterms_data($invoice->proposal_id);
+//$interComeHd = get_proposal_incoterms_data($invoice->proposal_id);
+$interComeHd = get_invoice_incoterms_data($invoice->id);
 $itemableIntermData = get_itemable_incoterms_data($invoice->proposal_id);
 
 // print_r($itemableIntermData);
@@ -118,7 +119,13 @@ $rateTDStyle = "text-align: center; border-left: 3px solid #7d7e7f; border-right
 $totalTDStyle = "text-align: center; border: 3px solid #7d7e7f; line-height: 40px;";
 $tableHtml = '<table style="font-size: ' . ($font_size + 4) . 'px; width: 100%;">';
 $tableHtml .= '<tr height="40" style="background-color: #323a45; color: white; line-height: 40px;">';
-$tableHtml .= '<th height="30">   Product   </th><th style="' . $rateThStyle . '">Rate</th>';
+$tableHtml .= '<th height="30">   Product   </th>';
+if(!$interComeHd){
+    $tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
+}else if($interComeHd['isRate']){
+    $tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
+}
+
 $totalColSpan = 1;
 $interComTotal = array();
 foreach ($interComeHd['fob_port'] as $fob_port) {
@@ -130,9 +137,11 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
     $port = array_values($port);
 
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
+    
     foreach ($interComeHd['container_type'] as $container_type) {
+  
         $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
-        $html .= '<th align="right" style="' . $rateThStyle . '">FOB (' . $port_name . ') ' . $prevContainer . '</th>';
+        $tableHtml .= '<th align="right" style="' . $rateThStyle . '">FOB (' . $port_name . ') ' . $prevContainer . '</th>';
         $totalColSpan++;
         if ($container_type == '20 FCL') {
             $interComTotal['total_fob_fcl_20_'.$fob_port] = [
@@ -194,9 +203,17 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
 $totalRateVal = 0;
 $totalRateQty = 0.00;
 $tableHtml .= '</tr>';
+// print_r($interComeHd);
+// die;
 foreach ($invoice->items as $prodItem) {
-    $tableHtml .= '<tr height="40" style="color: black; line-height: 40px;"><td height="30"><a href="' . $prodItem['prod_link'] . '">' . $prodItem['description'] . '</a></td>
-    <td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . $prodItem['rate'] . ' USD/mt</span></td>';
+    $tableHtml .= '<tr height="40" style="color: black; line-height: 40px;"><td height="30"><a href="' . $prodItem['prod_link'] . '">' . $prodItem['description'] . '</a></td>';
+    if(!$interComeHd){
+        $tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . $prodItem['rate'] . ' USD/mt</span></td>';
+    }else if($interComeHd['isRate']){
+        $tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . $prodItem['rate'] . ' USD/mt</span></td>';
+    }
+    
+
     $totalRateVal = $totalRateVal + (float)$prodItem['rate'];
     $totalRateQty = (float)$totalRateQty + (float)$prodItem['qty'];
     if ($interComeHd) {
@@ -298,8 +315,8 @@ foreach($interComTotal as $comTotal){
 $tableHtml .= '</tr>';
 $tableHtml .= '<tr><td></td>';
 $tableHtml .= '<td style="'.$totalTDStyle.'"><span>' . $totalRateQty . '.00 mt - ' . $totalRateVal . ' USD/mt</span></td>';
-$ivTotalRate += (float)$totalRateVal;
-$ivTotalQty += (float)$totalRateQty;
+// $ivTotalRate += (float)$totalRateVal;
+// $ivTotalQty += (float)$totalRateQty;
 foreach($interComTotal as $comTotal){
     $tableHtml .= '<td style="'.$totalTDStyle.'"><span>' . $comTotal['qty'] . '.00 mt - ' . $comTotal['rate'] . ' USD/mt</span></td>';
     $ivTotalRate += (float)$comTotal['rate'];
