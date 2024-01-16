@@ -71,13 +71,13 @@ class Missiveapp_model extends App_Model
         $this->db->order_by('YEAR(' . db_prefix() . 'pastsales.date)', 'desc');
         $consumptionByYear = $this->db->get(db_prefix() . 'pastsales')->result_array();
 
-        // $this->db->select('YEAR(' . db_prefix() . 'invoices.date) AS date_year, SUM(' . db_prefix() . 'itemable.qty) AS total_qty');
-        // $this->db->join(db_prefix() . 'invoices', db_prefix() . 'invoices.id=' . db_prefix() . 'itemable.rel_id', 'left');
-        // $this->db->where(db_prefix() . 'itemable.rel_type', 'invoice');
-        // $this->db->where(db_prefix() . 'invoices.clientid', $clientid);
-        // $this->db->group_by('YEAR(' . db_prefix() . 'invoices.date)');
-        // $this->db->order_by('YEAR(' . db_prefix() . 'invoices.date)', 'desc');
-        // $consumptionByYear = $this->db->get(db_prefix() . 'itemable')->result_array();
+        $this->db->select('YEAR(' . db_prefix() . 'invoices.date) AS date_year, SUM(' . db_prefix() . 'itemable.qty) AS total_qty');
+        $this->db->join(db_prefix() . 'invoices', db_prefix() . 'invoices.id=' . db_prefix() . 'itemable.rel_id', 'left');
+        $this->db->where(db_prefix() . 'itemable.rel_type', 'invoice');
+        $this->db->where(db_prefix() . 'invoices.clientid', $clientid);
+        $this->db->group_by('YEAR(' . db_prefix() . 'invoices.date)');
+        $this->db->order_by('YEAR(' . db_prefix() . 'invoices.date)', 'desc');
+        $consumptionInvoiceByYear = $this->db->get(db_prefix() . 'itemable')->result_array();
         
         //select * from users
        //where date_joined> now() - INTERVAL 12 month;

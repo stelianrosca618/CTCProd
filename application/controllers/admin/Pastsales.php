@@ -77,10 +77,36 @@ class Pastsales extends AdminController
         redirect(admin_url('pastsales'));
     }
     
+    public function uploadPastsales(){
+        $data = $this->input->post();
+        //foreach($data )
+        if($data){
+            $pastSales = $data['pastSales'];
+            foreach($pastSales as $saleItem){
+                $itemProd = $this->db->where('description', $saleItem['PRODUCT'])->get(db_prefix().'items')->row();
+                $this->db->insert(db_prefix().'pastsales', [
+                    'company' => $saleItem['COMPANY'],
+                    'date' => date("Y-m-d", strtotime($saleItem['DATE'])),
+                    'Product' => $itemProd->id,
+                    'Quantity' => $saleItem['QUANTITY'],
+                    "Price" => $saleItem['PRICE/UNIT'],
+                ]);
+            }
+            echo json_encode(['success' => true]);
+        }else{
+            echo json_encode(['success' => false]);
+        }
+    }
+
     public function getSales($id){
         $this->db->where('id', $id);
         $saleData = $this->db->get(db_prefix().'pastsales')->result_array();
         echo json_encode($saleData);
+    }
+
+    public function removeSales($id){
+        $this->db->where('id', $id)->delete(db_prefix().'pastsales');
+        echo json_encode(['success' => true]);
     }
 }
 ?>

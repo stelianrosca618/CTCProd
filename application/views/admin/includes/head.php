@@ -13,7 +13,8 @@
 
     <?php echo app_compile_css(); ?>
     <?php render_admin_js_variables(); ?>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
     <script>
     var totalUnreadNotifications = <?php echo $current_user->total_unread_notifications; ?>,
         proposalsTemplates = <?php echo json_encode(get_proposal_templates()); ?>,

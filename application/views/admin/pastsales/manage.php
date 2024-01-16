@@ -5,6 +5,11 @@
         <div class="row">
             <div class="col-md-12 tw-mb-2">
                 <button class="btn btn-md btn-primary" onclick="openNewSalesModal()">Add Past Sale</button>
+                <label for="xlxpicker" class="btn btn-md btn-primary">
+                    Add Past Sale with XLX
+                    <input type="file" id="xlxpicker" style="display: none;" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                </label>
+                
                 <!-- <button class="btn btn-md btn-primary" onclick="initSales()">init Past Sale</button> -->
             </div>
             <div class="col-md-12">
@@ -76,7 +81,7 @@ const columns = [
                 },
                 { title: "Action", data: 'id',
                     render: function (data, type) {
-                        return `<button class="btn btn-sm btn-primary" onclick="openEditSalesModal(${data})">Edit</button>`
+                        return `<button class="btn btn-sm btn-primary" onclick="openEditSalesModal(${data})">Edit</button><button class="btn btn-sm btn-danger" onclick="removePastSale(${data})">Delete</button>`
                     }
                 },
         ]
@@ -92,6 +97,43 @@ $('.past-sales-table').dataTable({
 						$('.dataTables_wrapper').removeClass('table-loading');
 					}
 })
+$("#xlxpicker").change(function (e) {
+    console.log('loaded event', e);
+    //this.parseExcel = function(file) {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      var data = e.target.result;
+      var workbook = XLSX.read(data, {
+        type: 'binary'
+      });
+
+      workbook.SheetNames.forEach(function(sheetName) {
+        // Here is your object
+        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+        var json_object = JSON.parse(JSON.stringify(XL_row_object));
+        console.log(json_object);
+        $.post(admin_url + 'pastsales/uploadPastsales/', {pastSales: json_object}).then(res => {
+            console.log(res);
+            window.location.reload();
+        });
+      })
+
+    };
+
+    reader.onerror = function(ex) {
+      console.log(ex);
+    };
+
+    reader.readAsBinaryString(file);
+    //}
+});
+function removePastSale(id){
+    $.get(admin_url + 'pastsales/removeSales/'+id).then(res => {
+        window.location.reload();
+    });
+}
 function openEditSalesModal(id){
     $.get(admin_url + 'pastsales/getSales/'+id).then(res => {
         var response = JSON.parse(res);
