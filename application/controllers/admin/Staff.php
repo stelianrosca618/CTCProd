@@ -30,6 +30,13 @@ class Staff extends AdminController
         if ($this->input->post()) {
             $data = $this->input->post();
             // Don't do XSS clean here.
+            if(isset($data['for_contract'])){
+                unset($data['for_contract']);
+            }
+            if(isset($data['for_proposal'])){
+                unset($data['for_proposal']);
+            }
+            // Don't do XSS clean here.
             $data['email_signature'] = $this->input->post('email_signature', false);
             $data['email_signature'] = html_entity_decode($data['email_signature']);
 
@@ -233,7 +240,8 @@ class Staff extends AdminController
         if ($this->input->post()) {
             handle_staff_profile_image_upload();
             $data = $this->input->post();
-            // Don't do XSS clean here.
+            
+            
             $data['email_signature'] = $this->input->post('email_signature', false);
             $data['email_signature'] = html_entity_decode($data['email_signature']);
 
