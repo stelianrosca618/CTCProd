@@ -168,7 +168,6 @@
         .lastNote-description{
             width: 100%;
             padding: 0 0 10px 0;
-            color: #858585;
         }
         .lastNote-date{
             width: 100%;

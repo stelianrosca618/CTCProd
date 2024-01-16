@@ -331,16 +331,16 @@
                     var leadfields = {id: response.contact.id};
                     /*leadfields.Products = null;
                     leadfields.prodId = null;
-                    leadfields.forecast = null;
-                    leadfields.forecastId = null;
                     leadfields.customId = null;
                     leadfields.dataSheet = null;
                     leadfields.dataSheetId = null;
                     leadfields.samples = null;
                     leadfields.sampleId = null;
-                    leadfields.trankIn = null;
-                    leadfields.trankInid = null;
                     leadfields.leadQuotation = null;*/
+                    leadfields.forecast = 'null';
+                    leadfields.forecastId = null;
+                    leadfields.trankIn = 'null';
+                    leadfields.trankInid = null;
                     if(response.leadFields.length > 0){
                         response.leadFields.map(fItem => {
                             if(fItem.fieldid == 1){
@@ -409,7 +409,7 @@
                                                         <select name="country[]" class="w-full"></select>
                                                     </div>
                                                     <div class="contact-country-viewer">
-                                                        <span class="contact-country-span" id="${leadData.country}">${response.contact.short_name? response.contact.short_name : ''}</span>
+                                                        <span class="contact-country-span" id="${leadData.country}">${response.contact.countryNames? response.contact.countryNames : ''}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -500,7 +500,7 @@
                                                 <div class="data-Name">FORECAST</div>
                                                 <div class="data-value">
                                                     <!--<span>${leadfields.forecast} mt/year</span>-->
-                                                    <input type="input" name="lead_forecast" id="${leadfields.forecastId}" class="lead-input" value="${leadfields.forecast == 'null'? '':leadfields.forecast }" readOnly  />
+                                                    <input type="input" name="lead_forecast" id="${leadfields.forecastId}" class="lead-input" value="${leadfields.forecast || leadfields.forecast == 'null'? '':leadfields.forecast }" readOnly  />
                                                 </div>
                                             </div>
                                             <div class="contact-data-row">
@@ -983,7 +983,7 @@
             Missive.openURL('https://crm.ctc.expert/admin/proposals/proposal?rel_id='+fullMissiveData.contact.userid+'&rel_type='+relType);
         })
         $(document).on('click', '.button-all-Contracts', function(e) {
-            Missive.openURL('https://crm.ctc.expert/admin/proposals/invoices');
+            Missive.openURL('https://crm.ctc.expert/admin/invoices');
         })
         $(document).on('click', '.contract-view', function(e) {
             Missive.openURL('https://crm.ctc.expert/invoice/'+e.target.id+'/'+$(this).attr('data-hash'));

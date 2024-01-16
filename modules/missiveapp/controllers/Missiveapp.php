@@ -203,7 +203,21 @@ class Missiveapp extends ClientsController
             }else if($leadData){
                 $success = true;
                 $status = 'lead';
-                $returnContact = $leadData;
+                //$returnContact = $leadData;
+                $this->db->where('country_id', $leadData['country']);
+                $countylist = $this->db->get(db_prefix().'countries')->result_array();
+                $countryNames = '';
+                // print_r($countylist);
+                // die;
+                foreach($countylist as $key => $countyItem){
+                    if($key > 0){
+                        $countryNames .=", ". $countyItem['short_name'];
+                    }else{
+                        $countryNames .=$countyItem['short_name'];
+                    }
+                    
+                }
+                $returnContact = array_merge($leadData, ['countryNames' => $countryNames]);
                 $customFields = $this->db->where('relid', $leadData['id'])->get(db_prefix().'customfieldsvalues')->result_array();
                 $leadQuataintion = [
                     'isActive'=> false,
