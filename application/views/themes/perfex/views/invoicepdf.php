@@ -140,8 +140,8 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
     
     foreach ($interComeHd['container_type'] as $container_type) {
   
-        $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
-        $tableHtml .= '<th style="' . $rateThStyle . '">FOB (' . $port_name . ') ' . $prevContainer . '</th>';
+        $prevContainer = strtolower($container_type) == 'air' ? 'FOB (' . $port_name . ') Destination' : 'FOB (' . $port_name . ') ' .$container_type;
+        $tableHtml .= '<th style="' . $rateThStyle . '">' . $prevContainer . '</th>';
         $totalColSpan++;
         if ($container_type == '20 FCL') {
             $interComTotal['total_fob_fcl_20_'.$fob_port] = [
@@ -175,8 +175,8 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
     
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
-        $tableHtml .= '<th style="' . $rateThStyle . '">CFR (' . $port_name . ') ' . $prevContainer . '</th>';
+        $prevContainer = strtolower($container_type) == 'air'? '(' . $port_name . ') Destination' : 'CFR (' . $port_name . ') ' . $prevContainer;
+        $tableHtml .= '<th style="' . $rateThStyle . '">' . $prevContainer . '</th>';
         $totalColSpan++;
         if ($container_type == '20 FCL') {
             $interComTotal['total_cfr_fcl_20_'.$cfr_port] = [

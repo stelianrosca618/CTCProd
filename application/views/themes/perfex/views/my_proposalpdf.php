@@ -80,8 +80,8 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
 
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
-        $html .= '<th align="right" style="' . $rateThStyle . '">FOB (' . $port_name . ') ' . $prevContainer . '</th>';
+        $prevContainer = strtolower($container_type) == 'air' ? 'FOB (' . $port_name . ') Destination' : 'FOB (' . $port_name . ') '.$container_type;
+        $html .= '<th align="right" style="' . $rateThStyle . '">' . $prevContainer . '</th>';
     }
 }
 
@@ -97,8 +97,8 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
     
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = strtolower($container_type) == 'air' ? 'Destination' : $container_type;
-        $tableHtml .= '<th align="right" style="' . $rateThStyle . '">CFR (' . $port_name . ') ' . $prevContainer . '</th>';
+        $prevContainer = strtolower($container_type) == 'air' ? 'CFR (' . $port_name . ') Destination' : 'CFR (' . $port_name . ') '.$container_type;
+        $tableHtml .= '<th align="right" style="' . $rateThStyle . '">' . $prevContainer . '</th>';
     }
 }
 
