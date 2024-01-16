@@ -97,7 +97,7 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
     
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
-        $prevContainer = strtolower($container_type) == 'air' ? 'CFR (' . $port_name . ') Destination' : 'CFR (' . $port_name . ') '.$container_type;
+        $prevContainer = strtolower($container_type) == 'air' ? '(' . $port_name . ') Destination' : 'CFR (' . $port_name . ') '.$container_type;
         $tableHtml .= '<th align="right" style="' . $rateThStyle . '">' . $prevContainer . '</th>';
     }
 }
@@ -132,15 +132,15 @@ foreach ($proposal->items as $prodItem) {
 
             foreach ($interComeHd['container_type'] as $container_type) {
                 if ($container_type == '20 FCL') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_fcl_20'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_fcl_20'], 'USD', true) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
 
                 if ($container_type == '40 FCL') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_fcl_40'], 'USD', true) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
 
                 if (strtolower($container_type) == 'air') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_fob_air'], 'USD', true) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
             }
         }
@@ -156,15 +156,15 @@ foreach ($proposal->items as $prodItem) {
 
             foreach ($interComeHd['container_type'] as $container_type) {
                 if ($container_type == '20 FCL') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_fcl_20'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_fcl_20'], 'USD', true) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
 
                 if ($container_type == '40 FCL') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_fcl_40'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_fcl_40'], 'USD', true) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
 
                 if (strtolower($container_type) == 'air') {
-                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_air'], 'USD', false) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
+                    $tableHtml .= '<td style="'.$rateTDStyle.'">' . app_format_money($incoterm['rate_cfr_air'], 'USD', true) . ' ' . 'USD' . '/' . $prodItem['unit'] . '</td>';
                 }
             }
         }

@@ -302,8 +302,8 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $prevContainer = strtolower($container_type) == 'air'? 'CFR ('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
-                    $html .= '<th align="right">CFR ('.$port_name.') '.$prevContainer.'</th>';
+                    $prevContainer = strtolower($container_type) == 'air'? '('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
+                    $html .= '<th align="right">'.$prevContainer.'</th>';
                 }
             }            
         }
@@ -376,7 +376,7 @@ class App_items_table extends App_items_table_template
 
                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                 foreach ($this->transaction->incoterms['container_type'] as $container_type) {
-                    $prevContainer = strtolower($container_type) == 'air'? 'CFR ('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
+                    $prevContainer = strtolower($container_type) == 'air'? '('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
                     $tblhtml .= '<th width="' . $regularItemWidth . '%" align="left">'.$prevContainer.'</th>';
                 }
             }            

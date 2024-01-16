@@ -677,7 +677,7 @@
     
                                 $port_name = ($port) ? $port[0]['name'] : 'N/A';
                                 foreach ($invoice->incoterms['container_type'] as $container_type) {
-                                    $prevContainer = strtolower($container_type) == 'air'? 'CFR ('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
+                                    $prevContainer = strtolower($container_type) == 'air'? '('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
                                     //$htmlOption .= '<li><a href="#" class="rate-list" data-id="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="FOB ('.$port_name.') '.$container_type.'">FOB ('.$port_name.') '.$container_type.'</a></li>';
                              //       $htmlOption .= '<option class="rate-list" value="fob-'.$fob_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">FOB ('.$port_name.') '.$prevContainer.'</option>';
                                     ?>
