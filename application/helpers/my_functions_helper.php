@@ -65,6 +65,32 @@ function handle_proposal_incoterms_save($proposalid, $data)
     }
 }
 
+function getTermTemplateForPDF($termId){
+	$CI = &get_instance();
+	$termTemplate = $CI->db->where('type', 'Terms')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+	if($termId){
+		$termTemplate = $CI->db->where('id', $termId)->get(db_prefix().'templates')->row();
+	}
+	return $termTemplate;
+}
+
+function getBankTemplateForPDF($bankId){
+	$CI = &get_instance();
+	$bankTemplate = $CI->db->where('type', 'Bank')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+	if($bankId){
+		$bankTemplate = $CI->db->where('id', $bankId)->get(db_prefix().'templates')->row();
+	}
+	return $bankTemplate;
+}
+function getTermTemplateWithProposal($proposalId){
+	$CI = &get_instance();
+	$proposalData = $CI->db->where('id', $proposalId)->get(db_prefix().'proposals')->row();
+	$termTemplate = $CI->db->where('type', 'Bank')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+	if($proposalData->termTemplate){
+		$termTemplate = $CI->db->where('id', $proposalData->termTemplate)->get(db_prefix().'templates')->row();
+	}
+	return $termTemplate;
+}
 function get_invoice_incoterms_data($invoiceid)
 {	
 	$CI = &get_instance();

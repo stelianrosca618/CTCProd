@@ -394,11 +394,11 @@
                     </div>
                     <!-- // EOF VK, Notes, MOQ & Quantity Offered -->
                     <div class="form-group">
-                        <label for="termTemplate">Term Template</label>
-                        <textarea class="form-control" id="termTemplate" readonly><?php echo $termTemplate->content?></textarea>
+                        
                         <?php 
-                            //echo render_select('termTemplate', $termTemplates, ['id', 'name'], 'Term Template', $termTemplate->id);
+                            echo render_select('termTemplate', $termTemplates, ['id', 'name'], 'Term Template', $termTemplate->id);
                         ?>
+                        <textarea class="form-control" id="termTemplate" readonly><?php echo $termTemplate->content?></textarea>
                     </div>
                 </div>
             </div>
@@ -441,7 +441,14 @@ $(function() {
         }
         
     })
-    
+    $('select[name="termTemplate"]').on('change', function(e) {
+        console.log('changed template', e);
+        $.get(admin_url + 'invoices/getTemplate?id=' + e.target.value).then(res => {
+            var resData = JSON.parse(res);
+            console.log(resData[0], $('#termTemplate'));
+            $('textarea#termTemplate').val(resData[0].content);
+        })
+    })
     $('#open_till').on('change', function(e){
         console.log(montNameArr);
         var newDayTime = new Date();

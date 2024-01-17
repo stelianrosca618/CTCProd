@@ -1207,6 +1207,7 @@
 
     <div class="panel-body">
         <?php echo render_select('bankTemplate', $bankTemplates, ['id', 'name'], 'Bank Template', $bankTemplate->id) ?>
+        <textarea class="form-control" id="bankTemplate" readonly><?php echo $bankTemplate->content?></textarea>
         <?php $value = (isset($invoice) ? $invoice->clientnote : get_option('predefined_clientnote_invoice')); ?>
         <?php echo render_textarea('clientnote', 'invoice_add_edit_client_note', $value); ?>
         <?php $value = (isset($invoice) ? $invoice->terms : get_option('predefined_terms_invoice')); ?>
@@ -1261,3 +1262,14 @@ var items_rates = <?php echo json_encode($item_rates); ?>;
 var items_rates = [];
 </script>
 <?php } ?>
+<script type="text/javascript">
+    console.log('sdsdsd', $('select[name="bankTemplate"]'));
+   
+$( document ).ready(function() {
+    console.log( "ready!" );
+});
+$(function(){
+    console.log('sdsdsd', $('select[name="bankTemplate"]'));
+    
+})
+</script>

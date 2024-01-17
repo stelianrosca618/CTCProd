@@ -499,11 +499,13 @@ $shipmentHtml = '<span><b>Shipment period:</b> January 2024</span>';
 $pdf->writeHTML($shipmentHtml, true, false, false, false, '');
 
 $pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 6));
-$termsHtml = '<span><b>Terms:</b> 5% Prepayment, 95% cash against copy of documents</span>';
+$termTemplate = getTermTemplateWithProposal($invoice->proposal_id);
+$termsHtml = '<span><b>Terms:</b> '.$termTemplate->content.'</span>';
 $pdf->writeHTML($termsHtml, true, false, false, false, '');
 
 $pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 6));
-$bankHtml = '<span><b>Bank:</b> Text of bank</span>';
+$bankTemplate = getBankTemplateForPDF($invoice->bankTemplate);
+$bankHtml = '<span><b>Bank:</b> '.$bankTemplate->content.'</span>';
 $pdf->writeHTML($bankHtml, true, false, false, false, '');
 
 if (!empty($invoice->terms)) {

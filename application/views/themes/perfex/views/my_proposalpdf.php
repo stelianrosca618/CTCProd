@@ -177,7 +177,12 @@ $tableHtml .= '<p><i>To view packing options and the data sheet, click on the pr
 $tableHtml .= '<p></p><p></p>';
 $shipmentDate = date('F Y', strtotime($proposal->shipment_period));
 $tableHtml .= '<p><b>Shipment period: </b> '.$shipmentDate.'</p>';
-$tableHtml .= '<p><b>Terms: </b> 5% Perpayment, 95% cash against copy of documents</p>';
+$termTemplate = getTermTemplateForPDF($proposal->termTemplate);
+// if($proposal->termTemplate){
+//     $termTemplate = $this->db->where('id', $proposal->termTemplate)->get(db_prefix().'templates')->row();
+// }
+
+$tableHtml .= '<p><b>Terms: </b> '.$termTemplate->content.'</p>';
 $tableHtml .= '<p><b>MOQ: </b> '.$proposal->moq.'</p>';
 $tableHtml .= '<p></p><p></p>';
 if(!empty($proposal->items)){

@@ -35,6 +35,14 @@ $(function() {
     init_ajax_project_search_by_customer_id();
     // Maybe items ajax search
     init_ajax_search('items', '#item_select.ajax-search', undefined, admin_url + 'items/search');
+    $('select[name="bankTemplate"]').on('change', function(e) {
+        console.log('loading', e);
+        $.get(admin_url + 'invoices/getTemplate?id=' + e.target.value).then(res => {
+            var resData = JSON.parse(res);
+            console.log(resData);
+            $('textarea#bankTemplate').val(resData[0].content);
+        })
+    })
 });
 </script>
 </body>
