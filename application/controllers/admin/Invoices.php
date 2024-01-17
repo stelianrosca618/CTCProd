@@ -413,8 +413,12 @@ class Invoices extends AdminController
         if ($id == '') {
             $title                  = _l('create_new_invoice');
             $data['billable_tasks'] = [];
+            
+            $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
         } else {
             $invoice = $this->invoices_model->get($id);
+
+            
 
             if (!$invoice || !user_can_view_invoice($id)) {
                 blank_page(_l('invoice_not_found'));
@@ -424,6 +428,14 @@ class Invoices extends AdminController
             $data['expenses_to_bill']  = $this->invoices_model->get_expenses_to_bill($invoice->clientid);
 
             $data['invoice']        = $invoice;
+
+            if($data['invoice']->bankTemplate){
+                $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('id', $data['invoice']->bankTemplate)->get(db_prefix().'templates')->row();
+            }else{
+                $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
+            }
+            
+
             $data['edit']           = true;
             $data['billable_tasks'] = $this->tasks_model->get_billable_tasks($invoice->clientid, !empty($invoice->project_id) ? $invoice->project_id : '');
 
@@ -451,7 +463,7 @@ class Invoices extends AdminController
             $data['ajaxItems'] = true;
         }
         $data['items_groups'] = $this->invoice_items_model->get_groups();
-
+        $data['bankTemplates'] = $this->db->where('type', 'Bank')->get(db_prefix().'templates')->result_array();
         $this->load->model('currencies_model');
         $data['currencies'] = $this->currencies_model->get();
 
@@ -521,9 +533,10 @@ class Invoices extends AdminController
         }
 
         $data['invoice'] = $invoice;
-        $data['bankTemplate'] = $this->db->where('Type', 'Bank')->where('addedfrom', $invoice->clientid)->get(db_prefix().'templates')->row();
-        if(!$data['bankTemplate']){
-            $data['bankTemplate'] = $this->db->where('Type', 'Bank')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+        if($data['invoice']->bankTemplate){
+            $data['bankTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['invoice']->termTemplate)->get(db_prefix().'templates')->row();
+        }else{
+            $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
         }
         
         $data['record_payment'] = false;

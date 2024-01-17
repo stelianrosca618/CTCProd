@@ -393,6 +393,13 @@
                         ?>
                     </div>
                     <!-- // EOF VK, Notes, MOQ & Quantity Offered -->
+                    <div class="form-group">
+                        <label for="termTemplate">Term Template</label>
+                        <textarea class="form-control" id="termTemplate" readonly><?php echo $termTemplate->content?></textarea>
+                        <?php 
+                            //echo render_select('termTemplate', $termTemplates, ['id', 'name'], 'Term Template', $termTemplate->id);
+                        ?>
+                    </div>
                 </div>
             </div>
             <?php echo form_close(); ?>

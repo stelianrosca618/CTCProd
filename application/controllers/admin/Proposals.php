@@ -185,13 +185,18 @@ class Proposals extends AdminController
         }
         if ($id == '') {
             $title = _l('add_new', _l('proposal_lowercase'));
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
         } else {
             $data['proposal'] = $this->proposals_model->get($id);
             // echo "<pre>";
             // print_r($data['proposal']);
             // die;
+            if($data['proposal']->termTemplate){
+                $data['termTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['proposal']->termTemplate)->get(db_prefix().'templates')->row();
+            }else{
+                $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
+            }
             
-
             if (!$data['proposal'] || !user_can_view_proposal($id)) {
                 blank_page(_l('proposal_not_found'));
             }
@@ -219,6 +224,8 @@ class Proposals extends AdminController
         $data['base_currency'] = $this->currencies_model->get_base_currency();
         $data['emails'] = $this->db->select('email')->from(db_prefix().'staff')->get()->result_array();
         
+        $data['termTemplates'] = $this->db->where('type', 'Terms')->get(db_prefix().'templates')->result_array();
+
         $data['title'] = $title;
         // BOF VK, Hide subtotal element
         // VK Mod: Add
@@ -349,11 +356,11 @@ class Proposals extends AdminController
         $data['members']               = $this->staff_model->get('', ['active' => 1]);
         $data['proposal_merge_fields'] = $merge_fields;
         $data['proposal']              = $proposal;
-        $data['termTemplate'] = $this->db->where('type', 'Terms')->where('addedfrom', $proposal->rel_id)->get(db_prefix().'templates')->row();
-        if($data['termTemplate']){
-            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+        if($data['proposal']->termTemplate){
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['proposal']->termTemplate)->get(db_prefix().'templates')->row();
+        }else{
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
         }
-        
         $data['totalNotes']            = total_rows(db_prefix() . 'notes', ['rel_id' => $id, 'rel_type' => 'proposal']);
         //$data['emails'] = $this->db->select('email')->from(db_prefix().'staff')->get()->result_array();
         if ($data['proposal']->invoice_id > 0) {
@@ -559,6 +566,10 @@ class Proposals extends AdminController
             'belongs_to' => 'proposal',
             'rel_id'     => $id,
         ];
+        
+        $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
+        $data['bankTemplates'] = $this->db->where('type', 'Bank')->get(db_prefix().'templates')->result_array();
+
         $this->load->view('admin/proposals/invoice_convert_template', $data);
     }
 
