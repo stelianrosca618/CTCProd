@@ -43,6 +43,15 @@ $(function() {
             $('textarea#bankTemplate').val(resData[0].content);
         })
     })
+    $('select[name="termTemplate"]').on('change', function(e) {
+        console.log('loading', e);
+        $.get(admin_url + 'invoices/getTemplate?id=' + e.target.value).then(res => {
+            var resData = JSON.parse(res);
+            console.log(resData);
+            $('textarea#termTemplate').val(resData[0].content);
+        })
+    })
+    
 });
 </script>
 </body>

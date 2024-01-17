@@ -499,7 +499,7 @@ $shipmentHtml = '<span><b>Shipment period:</b> January 2024</span>';
 $pdf->writeHTML($shipmentHtml, true, false, false, false, '');
 
 $pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 6));
-$termTemplate = getTermTemplateWithProposal($invoice->proposal_id);
+$termTemplate = getTermTemplateForPDF($invoice->termTemplate);
 $termsHtml = '<span><b>Terms:</b> '.$termTemplate->content.'</span>';
 $pdf->writeHTML($termsHtml, true, false, false, false, '');
 

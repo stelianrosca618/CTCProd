@@ -434,6 +434,12 @@ class Invoices extends AdminController
             }else{
                 $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
             }
+
+            if($data['invoice']->termTemplate){
+                $data['termTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['invoice']->termTemplate)->get(db_prefix().'templates')->row();
+            }else{
+                $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
+            }
             
 
             $data['edit']           = true;
@@ -464,6 +470,7 @@ class Invoices extends AdminController
         }
         $data['items_groups'] = $this->invoice_items_model->get_groups();
         $data['bankTemplates'] = $this->db->where('type', 'Bank')->get(db_prefix().'templates')->result_array();
+        $data['termTemplates'] = $this->db->where('type', 'Terms')->get(db_prefix().'templates')->result_array();
         $this->load->model('currencies_model');
         $data['currencies'] = $this->currencies_model->get();
 
@@ -534,11 +541,15 @@ class Invoices extends AdminController
 
         $data['invoice'] = $invoice;
         if($data['invoice']->bankTemplate){
-            $data['bankTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['invoice']->termTemplate)->get(db_prefix().'templates')->row();
+            $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('id', $data['invoice']->termTemplate)->get(db_prefix().'templates')->row();
         }else{
             $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
         }
-        
+        if($data['invoice']->termTemplate){
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['invoice']->termTemplate)->get(db_prefix().'templates')->row();
+        }else{
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
+        }
         $data['record_payment'] = false;
         $data['send_later']     = false;
 

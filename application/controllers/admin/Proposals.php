@@ -569,6 +569,12 @@ class Proposals extends AdminController
         
         $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', true)->get(db_prefix().'templates')->row();
         $data['bankTemplates'] = $this->db->where('type', 'Bank')->get(db_prefix().'templates')->result_array();
+        if($data['proposal']->termTemplate){
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['proposal']->termTemplate)->get(db_prefix().'templates')->row();
+        }else{
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
+        }
+        $data['termTemplates'] = $this->db->where('type', 'Terms')->get(db_prefix().'templates')->result_array();
 
         $this->load->view('admin/proposals/invoice_convert_template', $data);
     }

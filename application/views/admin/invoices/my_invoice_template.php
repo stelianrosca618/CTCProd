@@ -1206,6 +1206,8 @@
     <hr class="hr-panel-separator" />
 
     <div class="panel-body">
+        <?php echo render_select('termTemplate', $termTemplates, ['id', 'name'], 'Terms Template', $termTemplate->id) ?>
+        <textarea class="form-control" id="termTemplate" readonly><?php echo $termTemplate->content?></textarea>
         <?php echo render_select('bankTemplate', $bankTemplates, ['id', 'name'], 'Bank Template', $bankTemplate->id) ?>
         <textarea class="form-control" id="bankTemplate" readonly><?php echo $bankTemplate->content?></textarea>
         <?php $value = (isset($invoice) ? $invoice->clientnote : get_option('predefined_clientnote_invoice')); ?>
