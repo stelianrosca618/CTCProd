@@ -190,6 +190,7 @@ class Proposals extends AdminController
             // echo "<pre>";
             // print_r($data['proposal']);
             // die;
+            
 
             if (!$data['proposal'] || !user_can_view_proposal($id)) {
                 blank_page(_l('proposal_not_found'));
@@ -348,6 +349,11 @@ class Proposals extends AdminController
         $data['members']               = $this->staff_model->get('', ['active' => 1]);
         $data['proposal_merge_fields'] = $merge_fields;
         $data['proposal']              = $proposal;
+        $data['termTemplate'] = $this->db->where('type', 'Terms')->where('addedfrom', $proposal->rel_id)->get(db_prefix().'templates')->row();
+        if($data['termTemplate']){
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+        }
+        
         $data['totalNotes']            = total_rows(db_prefix() . 'notes', ['rel_id' => $id, 'rel_type' => 'proposal']);
         //$data['emails'] = $this->db->select('email')->from(db_prefix().'staff')->get()->result_array();
         if ($data['proposal']->invoice_id > 0) {

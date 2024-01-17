@@ -46,6 +46,9 @@
                     <div class="col-md-12">
                         <?php echo render_textarea('content', 'Content')?>
                     </div>
+                    <div class="col-md-12">
+                        <?php echo render_yes_no_option('isDefault', 'Is Default')?>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -68,6 +71,8 @@ function openNewTemplateModal(){
     $('select[name="group"]').val('').trigger('change');
     $('input[name="name"]').val('');
     $('textarea[name="content"]').val('');
+    console.log($('input[name="settings[isDefault]"]')[0]);
+    $('input[name="settings[isDefault]"]').prop("checked", false);
     $('#templateData_modal').modal('show');
 }
 function openTemplateModal(data){
@@ -81,6 +86,11 @@ function openTemplateModal(data){
         $('select[name="group"]').val(response.type).trigger('change');
         $('input[name="name"]').val(response.name);
         $('textarea[name="content"]').val(response.content);
+        if(response.isDefault == 1){
+            $($('input[name="settings[isDefault]"]')[0]).prop("checked", true);
+        }else{
+            $($('input[name="settings[isDefault]"]')[1]).prop("checked", true);
+        }
         $('#templateData_modal').modal('show');
     })
 }

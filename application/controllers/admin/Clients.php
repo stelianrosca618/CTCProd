@@ -86,14 +86,16 @@ class Clients extends AdminController
                 }
 
                 $data = $this->input->post();
-                // print_r($data);
-                // die;
-                if(isset($data['template'])){
-                    $templateData = $data['template'];
-                    unset($data['template']);
-                    $this->db->where('id', $templateData)->update(db_prefix().'templates', [
-                        'addedfrom' => $id,
-                    ]);
+                
+                if(isset($data['TermTemplate'])){
+                    $termTemplateData = $data['TermTemplate'];
+                    unset($data['TermTemplate']);
+                   
+                }
+                if(isset($data['BankTemplate'])){
+                    $bankTemplateData = $data['BankTemplate'];
+                    unset($data['BankTemplate']);
+                    
                 }
                 $save_and_add_contact = false;
                 if (isset($data['save_and_add_contact'])) {
@@ -107,6 +109,17 @@ class Clients extends AdminController
                     $assign['customer_admins'][] = get_staff_user_id();
                     $this->clients_model->assign_admins($assign, $id);
                 }
+                if($termTemplateData){
+                    $this->db->where('id', $termTemplateData)->update(db_prefix().'templates', [
+                        'addedfrom' => $id,
+                    ]);
+                }
+                if($bankTemplateData){
+                    $this->db->where('id', $bankTemplateData)->update(db_prefix().'templates', [
+                        'addedfrom' => $id,
+                    ]);
+                }
+                
                 if ($id) {
                     set_alert('success', _l('added_successfully', _l('client')));
                     if ($save_and_add_contact == false) {
@@ -122,15 +135,31 @@ class Clients extends AdminController
                     }
                 }
                 $data = $this->input->post();
-                if(isset($data['template'])){
-                    $templateData = $data['template'];
-                    unset($data['template']);
+                // print_r($data);
+                // die;
+                if(isset($data['TermTemplate'])){
+                    $termTemplateData = $data['TermTemplate'];
+                    unset($data['TermTemplate']);
+                     $this->db->where('type', 'Terms')->where('addedfrom', $id)->update(db_prefix().'templates', [
+                        'addedfrom' => '',
+                    ]);
+                    $this->db->where('id', $termTemplateData)->update(db_prefix().'templates', [
+                        'addedfrom' => $id,
+                    ]);
+                }
+                if(isset($data['BankTemplate'])){
+                    $bankTemplateData = $data['BankTemplate'];
+                    unset($data['BankTemplate']);
+                    $this->db->where('type', 'Bank')->where('addedfrom', $id)->update(db_prefix().'templates', [
+                        'addedfrom' => '',
+                    ]);
+                    $this->db->where('id', $bankTemplateData)->update(db_prefix().'templates', [
+                        'addedfrom' => $id,
+                    ]);
                 }
                 $data['country'] = implode(', ', $data['country']);
                 $success = $this->clients_model->update($data, $id);
-                $this->db->where('id', $templateData)->update(db_prefix().'templates', [
-                    'addedfrom' => $id,
-                ]);
+                
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('client')));
                 }
@@ -147,8 +176,18 @@ class Clients extends AdminController
 
         // Customer groups
         $data['groups'] = $this->clients_model->get_groups();
-        $data['templates'] = $this->db->get(db_prefix().'templates')->result_array();
-        $data['templateData'] = $this->db->where('addedfrom', $id)->get(db_prefix().'templates')->row();
+        $data['termTemplates'] = $this->db->where('type', 'Terms')->get(db_prefix().'templates')->result_array();
+        $data['bankTemplates'] = $this->db->where('type', 'Bank')->get(db_prefix().'templates')->result_array();
+        $data['termTemplate'] = $this->db->where('type', 'Terms')->where('addedfrom', $id)->get(db_prefix().'templates')->row();
+        if(!$data['termTemplate']){
+            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+        }
+        $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('addedfrom', $id)->get(db_prefix().'templates')->row();
+        // print_r($data['bankTemplate']);
+        // die;
+        if(!$data['bankTemplate']){
+            $data['bankTemplate'] = $this->db->where('type', 'Bank')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+        }
         if ($id == '') {
             $title = _l('add_new', _l('client_lowercase'));
         } else {

@@ -398,6 +398,7 @@
                             <p><strong>Notes:</strong> <?php echo $proposal->notes; ?></p>
                             <p><strong>MOQ:</strong> <?php echo $proposal->moq; ?></p>
                             <p><strong>Quantity Offered:</strong> <?php echo $proposal->quantity_offered; ?></p>
+                            <p><strong>Template:</strong> <?php echo $termTemplate->content; ?></p>
                         </div>
                         <!-- // EOF VK Display Proposal Items -->
                         <div class="editable proposal tc-content" id="proposal_content_area"

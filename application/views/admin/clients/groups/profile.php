@@ -173,7 +173,8 @@
                             </div>
                             <?php } ?>
                         </div>
-                        <?php echo render_select('template', $templates, ['id', 'name'], 'Template', $templateData->id); ?>
+                        <?php echo render_select('TermTemplate', $termTemplates, ['id', 'name'], 'Terms Template', $termTemplate->id); ?>
+                        <?php echo render_select('BankTemplate', $bankTemplates, ['id', 'name'], 'Bank Template', $bankTemplate->id); ?>
                         <hr />
                         
                         <?php $value = (isset($client) ? $client->address : ''); ?>

@@ -60,19 +60,31 @@ class Invoices extends AdminController
     }
     public function addTemplate(){
         $data = $this->input->post();
+       
         if($data){
-          //  print_r($data);
             if($data['id']){
+                if($data['settings']['isDefault'] == 1){
+                    $this->db->where('type', $data['group'])->update(db_prefix().'templates', [
+                        'isDefault' => 0,
+                    ]);    
+                }
                 $this->db->where('id', $data['id'])->update(db_prefix().'templates', [
                     'name' => $data['name'],
                     'type' => $data['group'],
-                    'content' => $data['content']
+                    'content' => $data['content'],
+                    'isDefault' => $data['settings']['isDefault'],
                 ]);
             }else{
+                if($data['settings']['isDefault'] == 1){
+                    $this->db->where('type', $data['group'])->update(db_prefix().'templates', [
+                        'isDefault' => 0,
+                    ]);    
+                }
                 $this->db->insert(db_prefix().'templates', [
                     'name' => $data['name'],
                     'type' => $data['group'],
-                    'content' => $data['content']
+                    'content' => $data['content'],
+                    'isDefault' => $data['settings']['isDefault'],
                 ]);
             }
         }
@@ -509,7 +521,11 @@ class Invoices extends AdminController
         }
 
         $data['invoice'] = $invoice;
-
+        $data['bankTemplate'] = $this->db->where('Type', 'Bank')->where('addedfrom', $invoice->clientid)->get(db_prefix().'templates')->row();
+        if(!$data['bankTemplate']){
+            $data['bankTemplate'] = $this->db->where('Type', 'Bank')->where('isDefault', 1)->get(db_prefix().'templates')->row();
+        }
+        
         $data['record_payment'] = false;
         $data['send_later']     = false;
 

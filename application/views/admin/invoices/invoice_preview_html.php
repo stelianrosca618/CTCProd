@@ -159,6 +159,9 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
     </div>
     <div class="row">
         <div class="col-md-12">
+            <p><strong>Template:</strong> <?php echo $bankTemplate->content; ?></p>
+        </div>
+        <div class="col-md-12">
             <div class="table-responsive">
                 <?php
          $items = get_items_table_data($invoice, 'invoice', 'html', true);
