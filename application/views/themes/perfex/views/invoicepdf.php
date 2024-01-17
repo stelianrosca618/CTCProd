@@ -120,11 +120,11 @@ $totalTDStyle = "text-align: center; border: 3px solid #7d7e7f; line-height: 40p
 $tableHtml = '<table style="font-size: ' . ($font_size + 4) . 'px; width: 100%;">';
 $tableHtml .= '<tr height="40" style="background-color: #323a45; color: white; line-height: 40px;">';
 $tableHtml .= '<th height="30" style="border-right: 3px solid white;">   Product   </th>';
-if(!$interComeHd){
-    $tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
-}else if($interComeHd['isRate']){
-    $tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
-}
+// if(!$interComeHd){
+//     $tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
+// }else if($interComeHd['isRate']){
+//     $tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
+// }
 
 $totalColSpan = 1;
 $interComTotal = array();
@@ -207,15 +207,15 @@ $tableHtml .= '</tr>';
 // die;
 foreach ($invoice->items as $prodItem) {
     $tableHtml .= '<tr height="40" style="color: black; line-height: 40px;"><td height="30"><a href="' . $prodItem['prod_link'] . '">' . $prodItem['description'] . '</a></td>';
-    if(!$interComeHd){
-        $tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . app_format_money($prodItem['rate'], 'USD', true) . ' USD/mt</span></td>';
-        $totalRateQty = (float)$totalRateQty + (float)$prodItem['qty'];
-        $totalRateVal = $totalRateVal + ((float)$prodItem['rate'] * (float)$prodItem['qty']);
-    }else if($interComeHd['isRate']){
-        $tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . app_format_money($prodItem['rate'], 'USD', true) . ' USD/mt</span></td>';
-        $totalRateQty = (float)$totalRateQty + (float)$prodItem['qty'];
-        $totalRateVal = $totalRateVal + ((float)$prodItem['rate'] * (float)$prodItem['qty']);
-    }
+    // if(!$interComeHd){
+    //     $tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . app_format_money($prodItem['rate'], 'USD', true) . ' USD/mt</span></td>';
+    //     $totalRateQty = (float)$totalRateQty + (float)$prodItem['qty'];
+    //     $totalRateVal = $totalRateVal + ((float)$prodItem['rate'] * (float)$prodItem['qty']);
+    // }else if($interComeHd['isRate']){
+    //     $tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['qty'] . 'mt - ' . app_format_money($prodItem['rate'], 'USD', true) . ' USD/mt</span></td>';
+    //     $totalRateQty = (float)$totalRateQty + (float)$prodItem['qty'];
+    //     $totalRateVal = $totalRateVal + ((float)$prodItem['rate'] * (float)$prodItem['qty']);
+    // }
     
 
    

@@ -67,7 +67,7 @@ class Cron_model extends App_Model
 
                 log_activity('Cron Invoked Manually');
             }
-
+            
             $this->staff_reminders();
             $this->events();
             $this->tasks_reminders();
@@ -1203,18 +1203,23 @@ class Cron_model extends App_Model
 
         $this->db->select('open_till,date,id');
         // Only 1 = open, 4 = sent
-        $this->db->where('status IN (1,4)');
+        $this->db->where('status IN (1,4,6)');
         $this->db->where('is_expiry_notified', 0);
         $proposals = $this->db->get(db_prefix() . 'proposals')->result_array();
         $now       = new DateTime(date('Y-m-d'));
 
         foreach ($proposals as $proposal) {
+            // log_activity('Cron is PropsalOLD'.$proposal['id'].' Checked');
             $open_till = new DateTime($proposal['open_till']);
+            $time1 = strtotime(date('Y-m-d'));
+            $time2 = strtotime($proposal['open_till']);
+            $diff = round(($time2 - $time1) / 3600,2); 
             if (
                 $proposal['open_till'] != null
-                &&  $now < $open_till
+               && $diff > 0 && $diff < 25
                 && is_proposals_expiry_reminders_enabled()
             ) {
+                log_activity('Cron is PropsalOLD'.$proposal['id'].' Checked-'.$diff);
                 $reminder_before        = get_option('send_proposal_expiry_reminder_before');
                 //$open_till              = new DateTime($proposal['open_till']);
                 $diff                   = $open_till->diff($now)->format('%a');
@@ -1224,9 +1229,9 @@ class Cron_model extends App_Model
                // $date_and_due_date_diff = floor($date_and_due_date_diff / (60 * 60 * 24));
 
                 //if ($diff <= $reminder_before && $date_and_due_date_diff > $reminder_before) {
-                if ($diff == 1) {
+                //if ($diff == 1) {
                     $this->proposals_model->send_expiry_reminder($proposal['id']);
-                }
+                //}
             }
         }
     }

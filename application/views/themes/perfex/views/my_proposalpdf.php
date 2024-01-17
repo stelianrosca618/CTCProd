@@ -66,7 +66,8 @@ $rateTDStyle = "text-align: center;";
 $totalTDStyle = "text-align: center;";
 $tableHtml = '<table style="font-size: 15px; width: 100%;">';
 $tableHtml .= '<tr height="40" style="background-color: #323a45; color: white; line-height: 40px;">';
-$tableHtml .= '<th height="30">   Product   </th><th style="' . $rateThStyle . '">Rate</th>';
+$tableHtml .= '<th height="30">   Product   </th>';
+//$tableHtml .= '<th style="' . $rateThStyle . '">Rate</th>';
 // print_r($proposal->$incoterms);
 //     die;
 foreach ($interComeHd['fob_port'] as $fob_port) {
@@ -81,7 +82,7 @@ foreach ($interComeHd['fob_port'] as $fob_port) {
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
         $prevContainer = strtolower($container_type) == 'air' ? 'FOB (' . $port_name . ') Destination' : 'FOB (' . $port_name . ') '.$container_type;
-        $html .= '<th align="right" style="' . $rateThStyle . '">' . $prevContainer . '</th>';
+        $html .= '<th style="' . $rateThStyle . '">' . $prevContainer . '</th>';
     }
 }
 
@@ -98,14 +99,14 @@ foreach ($interComeHd['cfr_port'] as $cfr_port) {
     $port_name = ($port) ? $port[0]['name'] : 'N/A';
     foreach ($interComeHd['container_type'] as $container_type) {
         $prevContainer = strtolower($container_type) == 'air' ? '(' . $port_name . ') Destination' : 'CFR (' . $port_name . ') '.$container_type;
-        $tableHtml .= '<th align="right" style="' . $rateThStyle . '">' . $prevContainer . '</th>';
+        $tableHtml .= '<th style="' . $rateThStyle . '">' . $prevContainer . '</th>';
     }
 }
 
 $tableHtml .= '</tr>';
 foreach ($proposal->items as $prodItem) {
-    $tableHtml .= '<tr height="40" style="color: black; line-height: 40px;"><td height="30"><a href="' . $prodItem['prod_link'] . '">' . $prodItem['description'] . '</a></td>
-    <td  style="'.$rateTDStyle.'"><span>' . $prodItem['rate'] . ' USD/mt</span></td>';
+    $tableHtml .= '<tr height="40" style="color: black; line-height: 40px;"><td height="30"><a href="' . $prodItem['prod_link'] . '">' . $prodItem['description'] . '</a></td>';
+    //$tableHtml .= '<td  style="'.$rateTDStyle.'"><span>' . $prodItem['rate'] . ' USD/mt</span></td>';
     $totalRateVal = $totalRateVal + (float)$prodItem['rate'];
     $totalRateQty = (float)$totalRateQty + (float)$prodItem['qty'];
     if ($interComeHd) {
@@ -175,7 +176,13 @@ foreach ($proposal->items as $prodItem) {
 $tableHtml .= '</table>';
 $tableHtml .= '<p><i>To view packing options and the data sheet, click on the product name</i></p>';
 $tableHtml .= '<p></p><p></p>';
-$shipmentDate = date('F Y', strtotime($proposal->shipment_period));
+if($proposal->shipment_period == '0000-00-00'){
+    $shipmentDate = date('F Y', strtotime('+ 15DAY', strtotime($proposal->open_till)));
+   // $shipmentDate = date('F Y', strtotime($proposal->shipment_period));
+}else{
+    $shipmentDate = date('F Y', strtotime($proposal->shipment_period));
+}
+
 $tableHtml .= '<p><b>Shipment period: </b> '.$shipmentDate.'</p>';
 $termTemplate = getTermTemplateForPDF($proposal->termTemplate);
 // if($proposal->termTemplate){
