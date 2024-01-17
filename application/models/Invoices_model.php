@@ -924,9 +924,11 @@ class Invoices_model extends App_Model
         }
 
         unset($data['removed_items']);
-
+        unset($data['cfr_rate']);
+        // print_r($data);
+        // die;
         $this->db->where('id', $id)->update('invoices', $data);
-
+        
         if ($this->db->affected_rows() > 0) {
             $updated = true;
 

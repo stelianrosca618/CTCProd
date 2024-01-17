@@ -622,9 +622,9 @@
 
                                     $port_name = ($port) ? $port[0]['name'] : 'N/A';
                                     foreach ($proposal->incoterms['container_type'] as $container_type) {
-                                        $prevContainer = strtolower($container_type) == 'air'? 'Destination' : $container_type;
+                                        $prevContainer = strtolower($container_type) == 'air'? '('.$port_name.') Destination' : 'CFR ('.$port_name.') '.$container_type;
                                         //$htmlOption .= '<li><a href="#" class="rate-list" data-id="cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'" data-name="CFR ('.$port_name.') '.$container_type.'">CFR ('.$port_name.') '.$container_type.'</a></li>';
-                                        $htmlOption .= '<option class="rate-list" value="cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">CFR ('.$port_name.') '.$prevContainer.'</option>';
+                                        $htmlOption .= '<option class="rate-list" value="cfr-'.$cfr_port.'-'.strtolower(str_replace(' ', '-', $container_type)).'">'.$prevContainer.'</option>';
                                     }
                                 } 
                             ?>

@@ -82,9 +82,9 @@ function getBankTemplateForPDF($bankId){
 	}
 	return $bankTemplate;
 }
-function getTermTemplateWithProposal($proposalId){
+function getTermTemplateWithProposal($invoiceId){
 	$CI = &get_instance();
-	$proposalData = $CI->db->where('id', $proposalId)->get(db_prefix().'proposals')->row();
+	$proposalData = $CI->db->where('id', $invoiceId)->get(db_prefix().'invoices')->row();
 	$termTemplate = $CI->db->where('type', 'Bank')->where('isDefault', 1)->get(db_prefix().'templates')->row();
 	if($proposalData->termTemplate){
 		$termTemplate = $CI->db->where('id', $proposalData->termTemplate)->get(db_prefix().'templates')->row();
