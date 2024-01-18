@@ -161,7 +161,7 @@ function format_proposal_number($id)
     $CI->db->order_by('datecreated', 'ASC');
     $proposalList = $CI->db->get(db_prefix() . 'proposals')->result_array();
     $num = 3;
-    $num = $num + ($id - $proposalList[0]['id']);
+    $num = $num + ($id - $proposalList[0]['id']) * 3;
     // // $yearlist = array_filter($proposalList, function($k) {
     // //     return $k['date_year'] == $yearStr;
     // // }, ARRAY_FILTER_USE_KEY);

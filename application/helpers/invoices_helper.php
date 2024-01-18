@@ -449,7 +449,7 @@ function format_invoice_number($id)
         $CI->db->order_by('datecreated', 'ASC');
         $proposalList = $CI->db->get(db_prefix() . 'proposals')->result_array();
         $num = 3;
-        $num = $num + ($proposalid - $proposalList[0]['id']);
+        $num = $num + ($proposalid - $proposalList[0]['id']) * 3;
         $prefix = 'CON-'.$yearStr.'-';
         
     } else {
@@ -464,7 +464,7 @@ function format_invoice_number($id)
         $CI->db->order_by('datecreated', 'ASC');
         $proposalList = $CI->db->get(db_prefix() . 'proposals')->result_array();
         $num = 3;
-        $num = $num + ($proposalid - $proposalList[0]['id']);
+        $num = $num + ($proposalid - $proposalList[0]['id']) * 3;
         $prefix = 'CON-'.$yearStr.'-';
     }
 

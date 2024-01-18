@@ -1005,7 +1005,7 @@
             Missive.openURL('https://crm.ctc.expert/admin/invoices?clientid=' + fullMissiveData.contact.userid);
         })
         $(document).on('click', '.contract-view', function(e) {
-            Missive.openURL('https://crm.ctc.expert/invoice/' + e.target.id + '/' + $(this).attr('data-hash'));
+            Missive.openURL('https://crm.ctc.expert/admin/invoices#' + e.target.id);
         })
         $(document).on('click', '.contract-edit', function(e) {
             Missive.openURL('https://crm.ctc.expert/admin/invoices/invoice/' + e.target.id);
@@ -1014,7 +1014,7 @@
             Missive.openURL('https://crm.ctc.expert/admin/proposals/repeat/' + e.target.id);
         })
         $(document).on('click', '.proposal-view', function(e) {
-            Missive.openURL('https://crm.ctc.expert/proposal/' + e.target.id + '/' + $(this).attr('data-hash'));
+            Missive.openURL('https://crm.ctc.expert/admin/proposals#' + e.target.id );
         })
         $(document).on('click', '.proposal-edit', function(e) {
             console.log(e, this, $(this));
