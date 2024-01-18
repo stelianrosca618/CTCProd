@@ -439,12 +439,33 @@ function format_invoice_number($id)
         $CI->db->select('date,number,prefix,number_format,status')
             ->from(db_prefix() . 'invoices')
             ->where('id', $id);
-
         $invoice = $CI->db->get()->row();
+        
+        $CI->db->where('invoice_id', $id);
+        $proposal = $CI->db->get(db_prefix() . 'proposals')->row();
+        $yearStr = date('Y', strtotime($proposal->date));
+        $proposalid = $proposal->id;
+        $CI->db->where('Year(datecreated)', $yearStr);
+        $CI->db->order_by('datecreated', 'ASC');
+        $proposalList = $CI->db->get(db_prefix() . 'proposals')->result_array();
+        $num = 3;
+        $num = $num + ($proposalid - $proposalList[0]['id']);
+        $prefix = 'CON-'.$yearStr.'-';
+        
     } else {
         $invoice = $id;
 
         $id = $invoice->id;
+        $CI->db->where('invoice_id', $id);
+        $proposal = $CI->db->get(db_prefix() . 'proposals')->row();
+        $yearStr = date('Y', strtotime($proposal->date));
+        $proposalid = $proposal->id;
+        $CI->db->where('Year(datecreated)', $yearStr);
+        $CI->db->order_by('datecreated', 'ASC');
+        $proposalList = $CI->db->get(db_prefix() . 'proposals')->result_array();
+        $num = 3;
+        $num = $num + ($proposalid - $proposalList[0]['id']);
+        $prefix = 'CON-'.$yearStr.'-';
     }
 
     if (!$invoice) {
@@ -458,7 +479,7 @@ function format_invoice_number($id)
     if ($invoice->status == Invoices_model::STATUS_DRAFT) {
         $number = $invoice->prefix . 'DRAFT';
     } else {
-        $number = sales_number_format($invoice->number, $invoice->number_format, $invoice->prefix, $invoice->date);
+        $number = sales_number_format($num, $invoice->number_format, $prefix, $invoice->date);
     }
 
     return hooks()->apply_filters('format_invoice_number', $number, [

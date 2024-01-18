@@ -49,7 +49,7 @@
                         <?php echo render_select('Product', $items, ['id', 'description'], 'Product') ?>
                     </div>
                     <div class="col-md-6">
-                        <?php echo render_input('Quantity', 'Quantity', '', 'number') ?>
+                        <?php echo render_input('Quantity', 'Quantity', '', 'float') ?>
                     </div>
                     <div class="col-md-6">
                         <?php echo render_input('Price', 'Price', '', 'float') ?>
@@ -72,12 +72,23 @@
     }
 let salesData = <?php echo json_encode($pastsales)?>;
 console.log('pastSales', salesData);
+let temp = Intl.NumberFormat("en-US",{
+    style: "decimal",
+    useGrouping: true,
+});
 const columns = [
                 { title: "Company", data: 'company' },
                 { title: "Product", data: 'ProdName' },
                 { title: "Date", data: 'date' },
-                { title: "Quantity", data: 'Quantity' },
-                { title: "Price", data: 'Price'
+                { title: "Quantity", data: 'Quantity',
+                    render: function (data, type){
+                        return (Math.round(data * 100) / 100).toFixed(2);
+                    }
+                },
+                { title: "Price", data: 'Price',
+                    render: function (data, type){
+                        return temp.format((Math.round(data * 100) / 100).toFixed(2));
+                    }
                 },
                 { title: "Action", data: 'id',
                     render: function (data, type) {

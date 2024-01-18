@@ -2182,13 +2182,15 @@ $(function () {
       Sales_table_ServerParams[$(this).attr("name")] =
         '[name="' + $(this).attr("name") + '"]';
     });
-
+    console.log('windowlocation', window.location);
     if (table_invoices.length) {
+      const params = new URLSearchParams(window.location.search);
+      const q = parseInt(params.get("clientid"));
       // Invoices tables
       initDataTable(
         table_invoices,
         admin_url +
-          "invoices/table" +
+          "invoices/table" +(q? '/'+q : '')+
           ($("body").hasClass("recurring") ? "?recurring=1" : ""),
         "undefined",
         "undefined",

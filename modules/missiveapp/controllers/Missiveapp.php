@@ -209,6 +209,18 @@ class Missiveapp extends ClientsController
                 $countryNames = '';
                 // print_r($countylist);
                 // die;
+                // $notes = $this->Misc_model->get_notes($leadData['id'], 'lead');
+                // print_r($notes);
+                $this->db->where('rel_id', $leadData['id']);
+                $this->db->where('rel_type', 'lead');
+                $this->db->order_by('dateadded', 'desc');
+                $notes = $this->db->get(db_prefix() . 'notes')->result_array();
+                if($notes)
+                {
+                    $last_notes = $notes;
+                    $fixed_notes = $notes[count($notes)-1]['description'];
+                    $fixedNote_id = $notes[count($notes)-1]['id'];
+                }
                 foreach($countylist as $key => $countyItem){
                     if($key > 0){
                         $countryNames .=", ". $countyItem['short_name'];
@@ -227,6 +239,7 @@ class Missiveapp extends ClientsController
                 $invoiceHtml = "";
                 $consumptionHtml = "";
                 $paymentHtml = "";
+                
                 break;
             }
         }

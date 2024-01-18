@@ -155,8 +155,21 @@ function format_proposal_number($id)
     $CI->db->where('id', $id);
     $proposal = $CI->db->get(db_prefix() . 'proposals')->row();
     $yearStr = date('Y', strtotime($proposal->date));
-    
-    $format = get_option('proposal_number_prefix') . $yearStr .'-'. str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
+
+     //$CI->db->select('TOP 1 *');
+    $CI->db->where('Year(datecreated)', $yearStr);
+    $CI->db->order_by('datecreated', 'ASC');
+    $proposalList = $CI->db->get(db_prefix() . 'proposals')->result_array();
+    $num = 3;
+    $num = $num + ($id - $proposalList[0]['id']);
+    // // $yearlist = array_filter($proposalList, function($k) {
+    // //     return $k['date_year'] == $yearStr;
+    // // }, ARRAY_FILTER_USE_KEY);
+    // $num = 3;
+    // if($proposalList){
+    //     $num = 3;
+    // }
+    $format = get_option('proposal_number_prefix') . $yearStr .'-'. str_pad($num, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
 
     return hooks()->apply_filters('proposal_number_format', $format, $id);
 }

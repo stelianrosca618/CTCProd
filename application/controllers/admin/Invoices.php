@@ -13,8 +13,9 @@ class Invoices extends AdminController
 
     /* Get all invoices in case user go on index page */
     public function index($id = '')
-    {
+    {   
         $this->list_invoices($id);
+        
     }
 
     /* List all invoices datatables */
@@ -36,6 +37,7 @@ class Invoices extends AdminController
         $data['invoices_sale_agents'] = $this->invoices_model->get_sale_agents();
         $data['invoices_statuses']    = $this->invoices_model->get_statuses();
         $data['bodyclass']            = 'invoices-total-manual';
+        $data['clientid'] = $this->input->get('clientid');
         $this->load->view('admin/invoices/manage', $data);
     }
 
