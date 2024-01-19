@@ -492,17 +492,7 @@ class Proposals extends AdminController
                     //     'item_id'=>$isItem[0]['id'],
                     // ]);
                     // die;
-                    $this->db->insert(db_prefix().'stocks', [
-                        'quantity'    => $proItem['qty'] * ($prodRatio / 100) * -1,
-                        'date' => date("Y-m-d"),
-                        'status' => 'invoiced',
-                        'Notes' => get_option('proposal_number_prefix') . str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT).' '.$companyData[0]['company'],
-                        'itemGroup_id' => $isItem[0]['group_id'],
-                        'invoice_id'=>$invoice_id,
-                        'proposal_id'=>$id,
-                        'prod_ratio'=>$prodRatio,
-                        'item_id'=>$isItem[0]['id'],
-                    ]);
+                    
                     $this->db->insert(db_prefix().'pastsales', [
                         'company' => $companyData[0]['company'],
                         'date' => date("Y-m-d"),
@@ -513,7 +503,19 @@ class Proposals extends AdminController
                     $this->db->where('rel_type', 'proposal')->where('rel_id', $id)->where('reference_item_id', $isItem[0]['id']);
                     $posalItem = $this->db->get(db_prefix().'itemable')->row();
 
-                    handle_itemable_incoterms_update($id, $invoice_id, $posalItem->id, $proItem['incoterms'], $invoicePorts);
+                    $totalQty = handle_itemable_incoterms_update($id, $invoice_id, $posalItem->id, $proItem['incoterms'], $invoicePorts);
+
+                    $this->db->insert(db_prefix().'stocks', [
+                        'quantity'    => $totalQty * ($prodRatio / 100) * -1,
+                        'date' => date("Y-m-d"),
+                        'status' => 'invoiced',
+                        'Notes' => get_option('proposal_number_prefix') . str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT).' '.$companyData[0]['company'],
+                        'itemGroup_id' => $isItem[0]['group_id'],
+                        'invoice_id'=>$invoice_id,
+                        'proposal_id'=>$id,
+                        'prod_ratio'=>$prodRatio,
+                        'item_id'=>$isItem[0]['id'],
+                    ]);
                 }
                 
                 log_activity('Proposal Converted to Invoice [InvoiceID: ' . $invoice_id . ', ProposalID: ' . $id . ']');

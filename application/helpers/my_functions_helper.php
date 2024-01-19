@@ -283,6 +283,7 @@ function handle_itemable_incoterms_update($proposalid, $invoiceid, $itemid, $ite
 	// 	'rate_port' => $incoterms['rate_port'],
 	// 	'exchange_rate' => $incoterms['exchange_rate']
 	// ]);
+	$totalQty = 0;
 	if($freights){
 		$itemable_incoterms_data = array();
 		foreach($freights as $freight) {
@@ -313,12 +314,14 @@ function handle_itemable_incoterms_update($proposalid, $invoiceid, $itemid, $ite
 	    	    		'qty_cfr_fcl_40' => $data['rate_cfr_fcl_40_qty'],
 	    	    		'qty_cfr_air' => $data['rate_cfr_air_qty'],	
 					]);
+					$totalQty =$totalQty + $data['rate_fob_fcl_20_qty'] + $data['rate_fob_fcl_40_qty'] + $data['rate_fob_air_qty'] + $data['rate_cfr_fcl_20_qty'] + $data['rate_cfr_fcl_40_qty'] + $data['rate_cfr_air_qty'];
 		    	}
 			}
 		}
 		// print_r($itemable_incoterms_data);
 		// die;
-	}
+	};
+	return $totalQty;
 
 	// print_r($item_incoterms);
 	// die;
