@@ -514,7 +514,7 @@
                                                 <div class="data-Name">FORECAST</div>
                                                 <div class="data-value">
                                                     <!--<span>${leadfields.forecast} mt/year</span>-->
-                                                    <input type="input" name="lead_forecast" id="${leadfields.forecastId}" class="lead-input" value="${leadfields.forecast || leadfields.forecast == 'null'? '':leadfields.forecast }" readOnly  />
+                                                    <input type="input" name="lead_forecast" id="${leadfields.forecastId}" class="lead-input" value="${leadfields.forecast == 'null'? '':leadfields.forecast }" readOnly  />
                                                 </div>
                                             </div>
                                             <div class="contact-data-row">
