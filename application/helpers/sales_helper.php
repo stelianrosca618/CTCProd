@@ -13,7 +13,7 @@ function is_using_multiple_currencies($table = null)
         $table = db_prefix() . 'invoices';
     }
 
-    $CI = & get_instance();
+    $CI = &get_instance();
     $CI->load->model('currencies_model');
     $currencies            = $CI->currencies_model->get();
     $total_currencies_used = 0;
@@ -195,7 +195,7 @@ function ajax_on_total_items()
  */
 function get_tax_by_id($id)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
     $CI->db->where('id', $id);
 
     return $CI->db->get(db_prefix() . 'taxes')->row();
@@ -207,7 +207,7 @@ function get_tax_by_id($id)
  */
 function get_tax_by_name($name)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
     $CI->db->where('name', $name);
 
     return $CI->db->get(db_prefix() . 'taxes')->row();
@@ -328,10 +328,12 @@ if (!function_exists('format_customer_info')) {
 
         $acceptsPrimaryContactDisplay = ['invoice', 'estimate', 'payment', 'credit_note'];
 
-        if (in_array($for, $acceptsPrimaryContactDisplay) &&
+        if (
+            in_array($for, $acceptsPrimaryContactDisplay) &&
             isset($data->client->show_primary_contact) &&
             $data->client->show_primary_contact == 1 &&
-            $primaryContactId = get_primary_contact_user_id($clientId)) {
+            $primaryContactId = get_primary_contact_user_id($clientId)
+        ) {
             $companyName = get_contact_full_name($primaryContactId) . '<br />' . $companyName;
         }
 
@@ -427,7 +429,7 @@ if (!function_exists('format_proposal_info')) {
     function format_proposal_info($proposal, $for = '')
     {
         $format = get_option('proposal_info_format');
-        
+
         $countryCode = '';
         $countryName = '';
 
@@ -509,7 +511,7 @@ if (!function_exists('format_organization_info')) {
         $format = _info_format_replace('country_code', get_option('invoice_company_country_code'), $format);
         $format = _info_format_replace('phone', get_option('invoice_company_phonenumber'), $format);
         $format = _info_format_replace('vat_number', $vat, $format);
-        $format = _info_format_replace('vat_number_with_label', $vat == '' ? '':_l('company_vat_number') . ': ' . $vat, $format);
+        $format = _info_format_replace('vat_number_with_label', $vat == '' ? '' : _l('company_vat_number') . ': ' . $vat, $format);
 
         $custom_company_fields = get_company_custom_fields();
 
@@ -545,21 +547,22 @@ function get_decimal_places()
  */
 function get_items_by_type($type, $id)
 {
-    $CI = &get_instance();
-    $CI->db->select(db_prefix() . 'itemable.*, '.db_prefix(). 'items.fcl_20_container, '.db_prefix(). 'items.fcl_40_container, '.db_prefix(). 'items.prod_link');
-    $CI->db->from(db_prefix() . 'itemable');
-    $CI->db->where('rel_id', $id);
-    $CI->db->where('rel_type', $type);
-    $CI->db->join(db_prefix() . 'items', db_prefix() . 'items.id = ' . db_prefix() . 'itemable.reference_item_id', 'left');
-    $CI->db->order_by('item_order', 'asc');
-
-    return $CI->db->get()->result_array();
+    
+        $CI = &get_instance();
+        $CI->db->select(db_prefix() . 'itemable.*, ' . db_prefix() . 'items.fcl_20_container, ' . db_prefix() . 'items.fcl_40_container, ' . db_prefix() . 'items.prod_link');
+        $CI->db->from(db_prefix() . 'itemable');
+        $CI->db->where(db_prefix() . 'itemable.rel_id', $id);
+        $CI->db->where(db_prefix() . 'itemable.rel_type', $type);
+        $CI->db->join(db_prefix() . 'items', db_prefix() . 'items.id = ' . db_prefix() . 'itemable.reference_item_id', 'left');
+        $CI->db->order_by(db_prefix() . 'item_order', 'asc');
+        return $CI->db->get() ? $CI->db->get()->result_array() : [];
+        
 }
 /**
-* Function that update total tax in sales table eq. invoice, proposal, estimates, credit note
-* @param  mixed $id
-* @return void
-*/
+ * Function that update total tax in sales table eq. invoice, proposal, estimates, credit note
+ * @param  mixed $id
+ * @return void
+ */
 function update_sales_total_tax_column($id, $type, $table)
 {
     $CI = &get_instance();
@@ -615,7 +618,7 @@ function update_sales_total_tax_column($id, $type, $table)
 
     $CI->db->where('id', $id);
     $CI->db->update($table, [
-            'total_tax' => $total_tax,
+        'total_tax' => $total_tax,
     ]);
 }
 
@@ -645,11 +648,11 @@ function _maybe_insert_post_item_tax($item_id, $post_item, $rel_id, $rel_type)
                         'rel_type' => $rel_type,
                     ]) == 0) {
                         $CI->db->insert(db_prefix() . 'item_tax', [
-                                'itemid'   => $item_id,
-                                'taxrate'  => $tax_rate,
-                                'taxname'  => $tax_name,
-                                'rel_id'   => $rel_id,
-                                'rel_type' => $rel_type,
+                            'itemid'   => $item_id,
+                            'taxrate'  => $tax_rate,
+                            'taxname'  => $tax_name,
+                            'rel_id'   => $rel_id,
+                            'rel_type' => $rel_type,
                         ]);
                         $affectedRows++;
                     }
@@ -693,23 +696,23 @@ function add_new_sales_item_post($item, $rel_id, $rel_type)
     // ]);
 
     $CI->db->insert(db_prefix() . 'itemable', [
-                    'reference_item_id'=> (isset($item['reference_item_id']) ? $item['reference_item_id'] : 0),
-                    'description'      => $item['description'],
-                    'long_description' => nl2br($item['long_description']),
-                    'qty'              => $item['qty'],
-                    'rate'             => number_format($item['rate'], get_decimal_places(), '.', ''),
-                    'rel_id'           => $rel_id,
-                    'rel_type'         => $rel_type,
-                    'item_order'       => $item['order'],
-                    'unit'             => $item['unit'],
-                ]);
+        'reference_item_id' => (isset($item['reference_item_id']) ? $item['reference_item_id'] : 0),
+        'description'      => $item['description'],
+        'long_description' => nl2br($item['long_description']),
+        'qty'              => $item['qty'],
+        'rate'             => number_format($item['rate'], get_decimal_places(), '.', ''),
+        'rel_id'           => $rel_id,
+        'rel_type'         => $rel_type,
+        'item_order'       => $item['order'],
+        'unit'             => $item['unit'],
+    ]);
 
     $id = $CI->db->insert_id();
-    
+
     if ($custom_fields !== false) {
         handle_custom_fields_post($id, $custom_fields);
     }
-    
+
     return $id;
 }
 
@@ -786,7 +789,8 @@ function handle_removed_sales_item_post($id, $rel_type)
  * @param  string $rel_type item relation eq. invoice, estimate
  * @return boolena
  */
-function getProposalNumber($id){
+function getProposalNumber($id)
+{
     $CI = &get_instance();
 
     $CI->db->where('id', $id);
@@ -803,8 +807,8 @@ function delete_taxes_from_item($item_id, $rel_type)
 {
     $CI = &get_instance();
     $CI->db->where('itemid', $item_id)
-    ->where('rel_type', $rel_type)
-    ->delete(db_prefix() . 'item_tax');
+        ->where('rel_type', $rel_type)
+        ->delete(db_prefix() . 'item_tax');
 
     return $CI->db->affected_rows() > 0 ? true : false;
 }
@@ -840,7 +844,7 @@ function get_items_table_data($transaction, $type, $for = 'html', $admin_preview
 {
     include_once(APPPATH . 'libraries/App_items_table.php');
     $class = new App_items_table($transaction, $type, $for, $admin_preview);
-   
+
     $class = hooks()->apply_filters('items_table_class', $class, $transaction, $type, $for, $admin_preview);
 
     if (!$class instanceof App_items_table_template) {

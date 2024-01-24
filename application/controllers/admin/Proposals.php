@@ -330,9 +330,8 @@ class Proposals extends AdminController
             echo _l('access_denied');
             die;
         }
-
         $proposal = $this->proposals_model->get($id, [], true);
-
+        
         if (!$proposal || !user_can_view_proposal($id)) {
             echo _l('proposal_not_found');
             die;
@@ -356,11 +355,13 @@ class Proposals extends AdminController
         $data['members']               = $this->staff_model->get('', ['active' => 1]);
         $data['proposal_merge_fields'] = $merge_fields;
         $data['proposal']              = $proposal;
+        
         if($data['proposal']->termTemplate){
             $data['termTemplate'] = $this->db->where('type', 'Terms')->where('id', $data['proposal']->termTemplate)->get(db_prefix().'templates')->row();
-        }else{
-            $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
         }
+        // else{
+        //     $data['termTemplate'] = $this->db->where('type', 'Terms')->where('isDefault', true)->get(db_prefix().'templates')->row();
+        // }
         $data['totalNotes']            = total_rows(db_prefix() . 'notes', ['rel_id' => $id, 'rel_type' => 'proposal']);
         //$data['emails'] = $this->db->select('email')->from(db_prefix().'staff')->get()->result_array();
         if ($data['proposal']->invoice_id > 0) {

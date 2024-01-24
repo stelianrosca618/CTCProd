@@ -311,11 +311,12 @@ class Clients extends AdminController
             );
 
             $data['zip_in_folder'] = slug_it($slug_zip_folder);
+            $data['client']->country = explode(", ", $data['client']->country);
         }
 
         $data['bodyclass'] = 'customer-profile dynamic-create-groups';
         $data['title']     = $title;
-        $data['client']->country = explode(", ", $data['client']->country);
+        
         $this->load->view('admin/clients/client', $data);
     }
 

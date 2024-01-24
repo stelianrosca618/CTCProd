@@ -393,13 +393,24 @@ class Proposals_model extends App_Model
         if (is_numeric($id)) {
             $this->db->where(db_prefix() . 'proposals.id', $id);
             $proposal = $this->db->get()->row();
+            
             if ($proposal) {
                 $proposal->attachments                           = $this->get_attachments($id);
-                $proposal->items                                 = get_items_by_type('proposal', $id);
+                // print_r($proposal);
+                // die;
+                if($proposal->total > 0){
+                    $proposal->items                                 = get_items_by_type('proposal', $id);
+                }
+                
                 // BOF VK, Handle proposal incoterms data
                 // VK Mod: Add
+                
                 $proposal->incoterms = get_proposal_incoterms_data($id);
-                $proposal->items_incoterms = get_itemable_incoterms_data($id);
+                if($proposal->items){
+                    $proposal->items_incoterms = get_itemable_incoterms_data($id);
+                }
+                
+                
                 // EOF VK, Handle proposal incoterms data
                 $proposal->visible_attachments_to_customer_found = false;
                 foreach ($proposal->attachments as $attachment) {
